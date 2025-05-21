@@ -46,13 +46,16 @@ const BigBoard = () => {
       <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center', marginY: 3 }}>
         NBA Big Board
       </Typography>
-      <Grid container spacing={3}>
-        {players.map(player => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={player.id}>
-            <PlayerCard player={player} />
-          </Grid>
-        ))}
-      </Grid>
+      <Grid container columns={12} spacing={3}>
+  {players.map((player, index) => (
+    <Grid
+      columnSpan={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+      key={player.id || `${player.name}-${index}`}
+    >
+      <PlayerCard player={player} />
+    </Grid>
+  ))}
+</Grid>
     </Container>
   );
 };

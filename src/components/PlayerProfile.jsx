@@ -20,7 +20,7 @@ const PlayerProfile = () => {
     setLoading(true); 
     try {
       const allPlayers = loadPlayerData();
-      const selectedPlayer = allPlayers.find(p => p.id.toString() === playerId);
+      const selectedPlayer = allPlayers.find(p => p.id != null && p.id.toString() === playerId);
       setPlayerData(selectedPlayer);
       setNewScoutingReports([]); // Reset new reports when player changes
     } catch (error) {
