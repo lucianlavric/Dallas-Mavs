@@ -155,8 +155,7 @@ if (!selectedPlayer) {
               <Avatar variant="square" sx={{ width: '100%', height: 'auto', aspectRatio: '2/3', mb: 2, mx: 'auto', fontSize: '4rem' }}>{playerData.firstName?.[0]}{playerData.lastName?.[0]}</Avatar>
             )}
             <Typography variant="h4" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
-            <Typography variant="subtitle1" gutterBottom>Team: {playerData.teamName || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-            <Typography variant="body1">Position: {playerData.position || 'N/A'}</Typography>
+            <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
             <Typography variant="body1">Height: {getHeightInFeetInches(playerData.height)}</Typography>
             <Typography variant="body1">Weight: {playerData.weight ? `${playerData.weight} lbs` : 'N/A'}</Typography>
             <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
@@ -220,7 +219,7 @@ if (!selectedPlayer) {
                     {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
                       const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = statDisplayType === 'perGame' && isValidGP ? gamesPlayed : 1;
                       return (
-                        <TableRow key={(log.Season || 'N/A') + (log.Team || 'N/A') + (log.League || 'N/A')}>
+                        <TableRow key={(log.Season || 'N/A') + (log.currentTeam || 'N/A') + (log.League || 'N/A')}>
                           <TableCell>{log.Season || 'N/A'}</TableCell><TableCell>{log.TeamAbbr || log.Team || 'N/A'}</TableCell><TableCell>{log.League || 'N/A'}</TableCell>
                           <TableCell>{log.GP || '0'}</TableCell><TableCell>{log.GS || '0'}</TableCell>
                           <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
