@@ -1,9 +1,29 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom'; // Renamed to avoid conflict with MUI Link
+import { Link as RouterLink } from 'react-router-dom';
 import { Card, CardActionArea, CardContent, CardMedia, Typography, Avatar } from '@mui/material';
 
+// Helper to convert inches to feet/inches
+function getHeightInFeetInches(heightInInches) {
+  if (!heightInInches || isNaN(heightInInches)) return 'N/A';
+  const feet = Math.floor(heightInInches / 12);
+  const inches = heightInInches % 12;
+  return `${feet}' ${inches}"`;
+}
+
+// Helper to calculate age from birthDate (expects YYYY-MM-DD)
+function getAge(birthDate) {
+  if (!birthDate) return 'N/A';
+  const today = new Date();
+  const dob = new Date(birthDate);
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 const PlayerCard = ({ player }) => {
-  const placeholderImageUrl = 'https://via.placeholder.com/200x300.png?text=No+Player+Image'; // More descriptive placeholder
+  const placeholderImageUrl = 'https://via.placeholder.com/200x300.png?text=No+Player+Image';
 
   const rank = player.scoutRankings?.averageMavericksRank;
   const displayRank = rank != null ? rank.toFixed(1) : 'N/A';
@@ -15,24 +35,23 @@ const PlayerCard = ({ player }) => {
           <CardMedia
             component="img"
             sx={{
-              height: 300, // Standardized height
-              objectFit: 'cover', // Ensure image covers the area
+              height: 300,
+              objectFit: 'cover',
             }}
             image={player.photoUrl}
             alt={`${player.firstName} ${player.lastName}`}
-            onError={(e) => { e.target.src = placeholderImageUrl; }} // Fallback if image fails to load
+            onError={(e) => { e.target.src = placeholderImageUrl; }}
           />
         ) : (
           <Avatar
             variant="square"
             sx={{
               width: '100%',
-              height: 300, // Standardized height for avatar as well
-              fontSize: '2rem', // Adjust font size for initials if needed
-              backgroundColor: 'grey.300' // Placeholder background color
+              height: 300,
+              fontSize: '2rem',
+              backgroundColor: 'grey.300'
             }}
           >
-            {/* Display initials or a generic icon if no photo */}
             {player.firstName?.[0]}{player.lastName?.[0]}
           </Avatar>
         )}
@@ -41,13 +60,19 @@ const PlayerCard = ({ player }) => {
             {player.firstName} {player.lastName}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Avg. Rank: {displayRank}
+            Avg. Scout Rank: {displayRank}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Position: {player.position}
+            Team: {player.currentTeam ? player.currentTeam : 'N/A'}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Team: {player.teamName ? `${player.teamName} (${player.teamConference})` : 'N/A'}
+            Height: {getHeightInFeetInches(player.height)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Age: {getAge(player.birthDate)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Weight: {player.weight ? `${player.weight} lbs` : 'N/A'}
           </Typography>
         </CardContent>
       </CardActionArea>
