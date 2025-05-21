@@ -10,7 +10,7 @@ const PlayerCard = ({ player }) => {
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardActionArea component={RouterLink} to={`/player/${player.id}`} sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
+      <CardActionArea component={RouterLink} to={`/player/${player.playerId}`} sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
         {player.photoUrl ? (
           <CardMedia
             component="img"

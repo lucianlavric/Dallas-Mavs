@@ -70,3 +70,37 @@ export const loadPlayerData = () => {
 
   return processedPlayers;
 };
+
+// Player object structure returned by loadPlayerData()
+/**
+ * @typedef {Object} Player
+ * @property {number} playerId
+ * @property {string} name
+ * @property {string} firstName
+ * @property {string} lastName
+ * @property {string} birthDate
+ * @property {number} height
+ * @property {number} weight
+ * @property {string|null} highSchool
+ * @property {string|null} highSchoolState
+ * @property {string} homeTown
+ * @property {string|null} homeState
+ * @property {string} homeCountry
+ * @property {string} nationality
+ * @property {string|null} photoUrl
+ * @property {string} currentTeam
+ * @property {string} league
+ * @property {string} leagueType
+ * @property {Object} scoutRankings
+ *   - All scout ranks (e.g. "ESPN Rank": number|null, etc)
+ *   - averageMavericksRank: number|null
+ *   - scoutHighLow: { [scoutName: string]: 'high'|'mid'|'low' }
+ * @property {Object} measurements
+ *   - All combine measurements (e.g. heightNoShoes: number|null, wingspan: number|null, etc)
+ * @property {Array<Object>} gameLogs
+ *   - Each object: { playerId: number, gameId: number, ..., pts: number, ... }
+ * @property {Array<Object>} seasonLogs
+ *   - Each object: { ...season stats, playerId?: number }
+ * @property {Array<Object>} scoutingReports
+ *   - Each object: { ...report fields, playerId?: number }
+ */

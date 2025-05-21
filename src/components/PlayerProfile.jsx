@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { loadPlayerData } from '../utils/dataProcessor';
 import ScoutingReportForm from './ScoutingReportForm'; // Import the form
@@ -7,29 +7,55 @@ import {
     Paper, Box, CircularProgress, Avatar, Select, MenuItem, FormControl, InputLabel,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
-import { format } from 'date-fns'; 
+import { format } from 'date-fns';
+
 
 const PlayerProfile = () => {
   const { playerId } = useParams();
+  const numericPlayerId = Number(playerId);
   const [playerData, setPlayerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [statDisplayType, setStatDisplayType] = useState('perGame');
   const [newScoutingReports, setNewScoutingReports] = useState([]); // State for new reports
 
-  useEffect(() => {
-    setLoading(true); 
-    try {
-      const allPlayers = loadPlayerData();
-      const selectedPlayer = allPlayers.find(p => p.id != null && p.id.toString() === playerId);
-      setPlayerData(selectedPlayer);
-      setNewScoutingReports([]); // Reset new reports when player changes
-    } catch (error) {
-      console.error("Error loading player data:", error);
-      setPlayerData(null); 
-    } finally {
-      setLoading(false);
+ useEffect(() => {
+  setLoading(true); 
+  try {
+    const allPlayers = loadPlayerData();
+    console.log('All players:', allPlayers);
+
+    // ✅ Check if allPlayers is an array
+    if (!Array.isArray(allPlayers)) {
+      console.error('allPlayers is not an array');
+      return;
     }
-  }, [playerId]);
+
+    console.log("Searching for playerId:", numericPlayerId);
+    console.log("All players:", allPlayers);
+
+const selectedPlayer = allPlayers.find(p => {
+  const match = p.playerId != null && Number(p.playerId) === numericPlayerId;
+  if (!match) {
+    console.log(`Skipping player: ${p.name}, ID: ${p.numericPlayerId ?? "NO ID"}`);
+  }
+  return match;
+});
+
+if (!selectedPlayer) {
+  console.warn(`No player found matching id: ${numericPlayerId}`);
+} else {
+  console.log("Selected player:", selectedPlayer);
+}
+
+    setPlayerData(selectedPlayer);
+    setNewScoutingReports([]); // Reset new reports when player changes
+  } catch (error) {
+    console.error("Error loading player data:", error);
+    setPlayerData(null); 
+  } finally {
+    setLoading(false);
+  }
+}, [numericPlayerId]); 
 
   const handleStatTypeChange = (event) => {
     setStatDisplayType(event.target.value);
@@ -67,11 +93,11 @@ const PlayerProfile = () => {
 
   if (playerData.scoutRankings) {
     Object.entries(playerData.scoutRankings).forEach(([scout, rank]) => {
-      if (typeof rank === 'number' && rank != null && scout !== 'averageMavericksRank' && scout !== 'playerId') {
+      if (typeof rank === 'number' && rank != null && scout !== 'averageMavericksRank' && scout !== 'numericPlayerId') {
         sumOfRanks += rank;
         numberOfScouts++;
         individualScoutRanks[scout] = rank;
-      } else if (scout !== 'averageMavericksRank' && scout !== 'playerId') {
+      } else if (scout !== 'averageMavericksRank' && scout !== 'numericPlayerId') {
         individualScoutRanks[scout] = null;
       }
     });
@@ -191,7 +217,7 @@ const PlayerProfile = () => {
                 <Table stickyHeader size="small">
                   <TableHead><TableRow>{statHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
                   <TableBody>
-                    {playerData.seasonLogs.sort((a, b) => b.Season.localeCompare(a.Season)).map(log => {
+                    {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
                       const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = statDisplayType === 'perGame' && isValidGP ? gamesPlayed : 1;
                       return (
                         <TableRow key={(log.Season || 'N/A') + (log.Team || 'N/A') + (log.League || 'N/A')}>

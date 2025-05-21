@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { loadPlayerData } from '../utils/dataProcessor';
 import PlayerCard from './PlayerCard';
 import { Container, Typography, Grid, CircularProgress, Box } from '@mui/material';
+import { Link } from 'react-router-dom'; // Import Link
 
 const BigBoard = () => {
   const [players, setPlayers] = useState([]);
@@ -47,15 +48,15 @@ const BigBoard = () => {
         NBA Big Board
       </Typography>
       <Grid container columns={12} spacing={3}>
-  {players.map((player, index) => (
-    <Grid
-      columnSpan={{ xs: 12, sm: 6, md: 4, lg: 3 }}
-      key={player.id || `${player.name}-${index}`}
-    >
-      <PlayerCard player={player} />
-    </Grid>
-  ))}
-</Grid>
+        {players.map((player, index) => (
+          console.log(player.playerId),
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={player.playerId || `${player.name}-${index}`}>
+            <Link to={`/player/${player.playerId}`} style={{ textDecoration: 'none' }}>
+              <PlayerCard player={player} />
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 };
