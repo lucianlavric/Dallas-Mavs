@@ -93,11 +93,11 @@ if (!selectedPlayer) {
 
   if (playerData.scoutRankings) {
     Object.entries(playerData.scoutRankings).forEach(([scout, rank]) => {
-      if (typeof rank === 'number' && rank != null && scout !== 'averageMavericksRank' && scout !== 'numericPlayerId') {
+      if (typeof rank === 'number' && rank != null && scout !== 'averageMavericksRank' && scout !== 'playerId') {
         sumOfRanks += rank;
         numberOfScouts++;
         individualScoutRanks[scout] = rank;
-      } else if (scout !== 'averageMavericksRank' && scout !== 'numericPlayerId') {
+      } else if (scout !== 'averageMavericksRank' && scout !== 'playerId') {
         individualScoutRanks[scout] = null;
       }
     });
