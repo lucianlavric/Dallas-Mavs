@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { loadPlayerData } from '../utils/dataProcessor';
 import PlayerCard from './PlayerCard';
-import { Container, Typography, Grid, CircularProgress, Box } from '@mui/material';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom'; // Import Link
 
 const BigBoard = () => {

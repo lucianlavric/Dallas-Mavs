@@ -2,11 +2,27 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { loadPlayerData } from '../utils/dataProcessor';
 import ScoutingReportForm from './ScoutingReportForm'; // Import the form
-import { 
-    Container, Typography, Grid, CardMedia, List, ListItem, ListItemText, 
-    Paper, Box, CircularProgress, Avatar, Select, MenuItem, FormControl, InputLabel,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow
-} from '@mui/material';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import CardMedia from '@mui/material/CardMedia';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Avatar from '@mui/material/Avatar';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import { format } from 'date-fns';
 
 
@@ -147,7 +163,7 @@ if (!selectedPlayer) {
     <Container sx={{ mt: 3, mb: 3 }}>
       <Grid container spacing={3}>
         {/* Bio Section */}
-        <Grid item xs={12} md={4}>
+        <Grid>
           <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
             {playerData.photoUrl ? (
               <CardMedia component="img" image={playerData.photoUrl} alt={`${playerData.firstName} ${playerData.lastName}`} sx={{ width: '100%', mb: 2, borderRadius: '4px' }} onError={(e) => { e.target.src = placeholderImageUrl; }} />
@@ -164,20 +180,20 @@ if (!selectedPlayer) {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={8}>
+        <Grid>
           {/* Measurements Section */}
           {playerData.measurements && Object.keys(playerData.measurements).length > 1 && (
             <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
               <Typography variant="h5" gutterBottom>Measurements</Typography>
               <Grid container spacing={1}>
-                <Grid item xs={12} sm={6} md={4}><Typography>Height (No Shoes): {getHeightInFeetInches(playerData.measurements.heightNoShoes)}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Wingspan: {getHeightInFeetInches(playerData.measurements.wingspan)}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Standing Reach: {getHeightInFeetInches(playerData.measurements.reach)}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Max Vertical: {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Weight: {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Body Fat: {playerData.measurements.bodyFat != null ? `${playerData.measurements.bodyFat}%` : 'N/A'}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Hand Length: {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}</Typography></Grid>
-                <Grid item xs={12} sm={6} md={4}><Typography>Hand Width: {playerData.measurements.handWidth != null ? `${playerData.measurements.handWidth}"` : 'N/A'}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Wingspan: {getHeightInFeetInches(playerData.measurements.wingspan)}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Height (No Shoes): {getHeightInFeetInches(playerData.measurements.heightNoShoes)}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Standing Reach: {getHeightInFeetInches(playerData.measurements.reach)}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Max Vertical: {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Weight: {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Body Fat: {playerData.measurements.bodyFat != null ? `${playerData.measurements.bodyFat}%` : 'N/A'}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Length: {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}</Typography></Grid>
+                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Width: {playerData.measurements.handWidth != null ? `${playerData.measurements.handWidth}"` : 'N/A'}</Typography></Grid>
               </Grid>
             </Paper>
           )}
