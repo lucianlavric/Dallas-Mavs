@@ -1,10 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import { Card, CardActionArea, CardContent, CardMedia, Typography, Avatar } from '@mui/material';
 
 // Helper to convert inches to feet/inches
 function getHeightInFeetInches(heightInInches) {
@@ -28,24 +23,30 @@ function getAge(birthDate) {
 }
 
 const PlayerCard = ({ player }) => {
-  const placeholderImageUrl = 'https://via.placeholder.com/120x180.png?text=No+Player+Image';
+  const placeholderImageUrl = 'https://via.placeholder.com/200x300.png?text=No+Player+Image';
 
   const rank = player.scoutRankings?.averageMavericksRank;
   const displayRank = rank != null ? rank.toFixed(1) : 'N/A';
 
+  // Define a fixed height for the image/avatar area
+  const imageHeight = 150; // Example height, can be adjusted
+  const imageWidth = 120; // Example width, can be adjusted
+
   return (
-    <Card sx={{ height: 220, width: 160, display: 'flex', flexDirection: 'column' }}>
-      <CardActionArea component={RouterLink} to={`/player/${player.playerId}`} sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
+    <Card sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}> {/* Removed height: '100%' from Card */}
+      <CardActionArea 
+        component={RouterLink} 
+        to={`/player/${player.playerId}`} 
+        sx={{ display: 'flex', flexDirection: 'row', width: '100%', textDecoration: 'none', color: 'inherit' }}
+      >
         {player.photoUrl ? (
           <CardMedia
             component="img"
             sx={{
-              width: 120,
-              height: 180,
+              width: imageWidth,
+              height: imageHeight,
               objectFit: 'cover',
-              mx: 'auto',
-              my: 1,
-              borderRadius: 1,
+              flexShrink: 0 // Prevent image from shrinking
             }}
             image={player.photoUrl}
             alt={`${player.firstName} ${player.lastName}`}
@@ -55,24 +56,37 @@ const PlayerCard = ({ player }) => {
           <Avatar
             variant="square"
             sx={{
-              width: 120,
-              height: 180,
-              fontSize: '1.5rem',
+              width: imageWidth,
+              height: imageHeight,
+              fontSize: '2rem',
               backgroundColor: 'grey.300',
-              mx: 'auto',
-              my: 1,
-              borderRadius: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0 // Prevent avatar from shrinking
             }}
           >
             {player.firstName?.[0]}{player.lastName?.[0]}
           </Avatar>
         )}
-        <CardContent sx={{ p: 1 }}>
-          <Typography gutterBottom variant="subtitle1" component="div" noWrap>
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 2, overflow: 'hidden' }}> {/* Added overflow: hidden and justifyContent: 'center' */}
+          <Typography gutterBottom variant="h6" component="div" noWrap sx={{lineHeight: 1.2, mb: 0.5 }}> {/* Ensure noWrap is effective for single-line ellipsis */}
             {player.firstName} {player.lastName}
           </Typography>
-          <Typography variant="caption" color="text.secondary" noWrap>
+          <Typography variant="body2" color="text.secondary">
             Avg. Scout Rank: {displayRank}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Team: {player.currentTeam ? player.currentTeam : 'N/A'}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Height: {getHeightInFeetInches(player.height)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Age: {getAge(player.birthDate)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Weight: {player.weight ? `${player.weight} lbs` : 'N/A'}
           </Typography>
         </CardContent>
       </CardActionArea>
