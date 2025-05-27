@@ -17,7 +17,7 @@ function App() {
         sx={{
           mt: 3,
           mb: 3,
-          minHeight: '100vh', // Ensures the app covers the viewport height
+          // minHeight: '100vh', // Ensures the app covers the viewport height
           display: 'flex',
           flexDirection: 'column',
           width: "100%",
