@@ -51,13 +51,14 @@ const BigBoard = () => {
       <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center', marginY: 3 }}>
         NBA Big Board
       </Typography>
-      <Grid container columns={12} spacing={3}>
+      <Grid container spacing={3}> {/* Removed columns={12} as it's default and often not needed */}
         {players.map((player, index) => (
-          console.log(player.playerId),
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={player.playerId || `${player.name}-${index}`}>
-            <Link to={`/player/${player.playerId}`} style={{ textDecoration: 'none' }}>
-              <PlayerCard player={player} />
-            </Link>
+          // Corrected Grid item props and made it full-width
+          <Grid item xs={12} key={player.playerId || `${player.name}-${index}`}>
+            {/* The Link component was here, but PlayerCard itself is now a CardActionArea which is a link */}
+            {/* So, we can directly use PlayerCard if it handles its own navigation, or keep the Link if PlayerCard is not a link itself. */}
+            {/* Based on PlayerCard.jsx, CardActionArea IS a RouterLink. So, no need for this Link here. */}
+            <PlayerCard player={player} />
           </Grid>
         ))}
       </Grid>
