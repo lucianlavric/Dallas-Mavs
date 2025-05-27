@@ -190,8 +190,24 @@ if (!selectedPlayer) {
             )}
             <Typography variant="h4" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
             <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-            <Typography variant="body1">Height: {getHeightInFeetInches(playerData.height)}</Typography>
-            <Typography variant="body1">Weight: {playerData.weight ? `${playerData.weight} lbs` : 'N/A'}</Typography>
+            <Typography variant="body1">
+              Height: {
+                playerData.measurements && playerData.measurements.heightShoes != null
+                  ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
+                  : playerData.height != null
+                    ? `${getHeightInFeetInches(playerData.height)} 🟡`
+                    : 'N/A'
+              }
+            </Typography>
+            <Typography variant="body1">
+              Weight: {
+                playerData.measurements && playerData.measurements.weight != null
+                  ? `${playerData.measurements.weight} lbs ✅`
+                  : playerData.weight != null
+                    ? `${playerData.weight} lbs 🟡`
+                    : 'N/A'
+              }
+            </Typography>
             <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
             <Typography variant="body1">High School: {playerData.highSchool || 'N/A'}</Typography>
             <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
@@ -209,7 +225,6 @@ if (!selectedPlayer) {
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Standing Reach: {getHeightInFeetInches(playerData.measurements.reach)}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Max Vertical: {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Weight: {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}</Typography></Grid>
-                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Body Fat: {playerData.measurements.bodyFat != null ? `${playerData.measurements.bodyFat}%` : 'N/A'}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Length: {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Width: {playerData.measurements.handWidth != null ? `${playerData.measurements.handWidth}"` : 'N/A'}</Typography></Grid>
               </Grid>
