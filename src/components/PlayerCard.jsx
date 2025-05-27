@@ -1,26 +1,6 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { Card, CardActionArea, CardContent, CardMedia, Typography, Avatar } from '@mui/material';
-
-// Helper to convert inches to feet/inches
-function getHeightInFeetInches(heightInInches) {
-  if (!heightInInches || isNaN(heightInInches)) return 'N/A';
-  const feet = Math.floor(heightInInches / 12);
-  const inches = heightInInches % 12;
-  return `${feet}' ${inches}"`;
-}
-
-// Helper to calculate age from birthDate (expects YYYY-MM-DD)
-function getAge(birthDate) {
-  if (!birthDate) return 'N/A';
-  const today = new Date();
-  const dob = new Date(birthDate);
-  let age = today.getFullYear() - dob.getFullYear();
-  const m = today.getMonth() - dob.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-    age--;
-  }
-  return age;
-}
+import { getAge, getHeightInFeetInches } from '../utils/playerUtils';
 
 const PlayerCard = ({ player }) => {
   const placeholderImageUrl = 'https://via.placeholder.com/200x300.png?text=No+Player+Image';

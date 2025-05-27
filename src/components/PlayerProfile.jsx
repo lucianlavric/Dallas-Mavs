@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { loadPlayerData } from '../utils/dataProcessor';
+import { getHeightInFeetInches } from '../utils/playerUtils';
 import ScoutingReportForm from './ScoutingReportForm'; // Import the form
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -122,12 +123,6 @@ if (!selectedPlayer) {
   const overallAverageRank = numberOfScouts > 0 ? sumOfRanks / numberOfScouts : null;
   const rankThreshold = 5; 
 
-  const getHeightInFeetInches = (inches) => {
-    if (inches == null || isNaN(inches)) return 'N/A';
-    const feet = Math.floor(inches / 12);
-    const remainingInches = inches % 12;
-    return `${feet}' ${remainingInches}"`;
-  };
   
   const placeholderImageUrl = 'https://via.placeholder.com/300x450.png?text=No+Player+Image';
 
@@ -213,7 +208,6 @@ if (!selectedPlayer) {
                   }
                 </Typography>
                 <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
-                <Typography variant="body1">High School: {playerData.highSchool || 'N/A'}</Typography>
                 <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
               </Grid>
             </Stack>
