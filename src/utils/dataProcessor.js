@@ -10,10 +10,39 @@ export const loadPlayerData = () => {
     scoutingReports = [],
   } = rawData;
 
+  const EXHIBITION_LEAGUE_NAMES_LOWERCASE = [
+    "ncaa exhibitions",
+    "combine",
+    "g-league elite camp",
+    "hoop summit",
+    "u-18 national team exh",
+    "national team exhibitions",
+    "adidas eurocamp",
+    "chipotle nationals",
+    "eybl scholastic",
+    "city of palms",
+    "border league",
+    "montverde tournament",
+    "nbpa top 100",
+    "sportradar showdown",
+    "overtime elite",
+    "adriatic junior",
+    "radivoj korac cup",
+    "fiba u19 world",
+    "fiba u20 europe a",
+    "fiba eurobasket qlf"
+  ];
+
+  // Filter seasonLogs first to exclude exhibition leagues
+  const filteredSeasonLogs = seasonLogs.filter(log => {
+    const leagueName = log.League || log.league; // Accommodate potential variations in property casing
+    if (!leagueName) return true; // Keep if league name is missing, or decide to filter
+    return !EXHIBITION_LEAGUE_NAMES_LOWERCASE.includes(leagueName.toLowerCase());
+  });
+
   // Map seasonLogs and scoutingReports by playerId if possible
-  // (Assuming each seasonLog and scoutingReport has a playerId field, otherwise you may need to adjust this)
   const seasonLogsByPlayer = {};
-  seasonLogs.forEach((log, idx) => {
+  filteredSeasonLogs.forEach((log, idx) => {
     if (log.playerId) {
       if (!seasonLogsByPlayer[log.playerId]) seasonLogsByPlayer[log.playerId] = [];
       seasonLogsByPlayer[log.playerId].push(log);
@@ -62,7 +91,12 @@ export const loadPlayerData = () => {
         ? { ...playerScoutRankings, averageMavericksRank, scoutHighLow }
         : { averageMavericksRank, scoutHighLow },
       measurements: measurements.find(m => m.playerId === playerId) || {},
-      gameLogs: game_logs.filter(log => log.playerId === playerId),
+      gameLogs: game_logs.filter(log => {
+        if (log.playerId !== playerId) return false;
+        const leagueName = log.league; // game_logs are expected to have 'league'
+        if (!leagueName) return true; // Keep if league name is missing
+        return !EXHIBITION_LEAGUE_NAMES_LOWERCASE.includes(leagueName.toLowerCase());
+      }),
       seasonLogs: seasonLogsByPlayer[playerId] || [],
       scoutingReports: scoutingReportsByPlayer[playerId] || [],
     };
