@@ -52,7 +52,7 @@
       "homeState": "TN",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": null,
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/4873138.png&w=350&h=254",
       "currentTeam": "Rutgers",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -166,7 +166,7 @@
       "homeState": "IL",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": null,
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/5144091.png&w=350&h=254",
       "currentTeam": "Oklahoma",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -223,7 +223,7 @@
       "homeState": null,
       "homeCountry": "France",
       "nationality": "France",
-      "photoUrl": null,
+      "photoUrl": "https://www.proballers.com/media/cache/resize_600_png/https---www.proballers.com/ul/player/joan-beringer2-1ef7b527-0c8f-6b16-a1f2-a9cebb64ebd2.png",
       "currentTeam": "Cedevita Olimpija",
       "league": "Slovenia - SKL",
       "leagueType": "Pro"
@@ -318,7 +318,7 @@
       "homeState": null,
       "homeCountry": "Israel",
       "nationality": "Israel",
-      "photoUrl": null,
+      "photoUrl": "https://www.sportball.es/wp-content/uploads/2025/04/Ben-Saraf-Israel.jpg",
       "currentTeam": "Ratiopharm Ulm",
       "league": "Germany - BBL",
       "leagueType": "Pro"
@@ -375,7 +375,7 @@
       "homeState": "ON",
       "homeCountry": "Canada",
       "nationality": "Canada",
-      "photoUrl": null,
+      "photoUrl": "https://a.espncdn.com/i/headshots/mens-college-basketball/players/full/5144126.png",
       "currentTeam": "Illinois",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -432,7 +432,7 @@
       "homeState": "CA",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": null,
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/5061568.png&w=350&h=254",
       "currentTeam": "Arizona",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -508,7 +508,7 @@
       "homeState": null,
       "homeCountry": "France",
       "nationality": "France",
-      "photoUrl": null,
+      "photoUrl": "https://www.proballers.com/media/cache/resize_600_png/https---www.proballers.com/ul/player/noah-penda-buste2-1ef7cfc3-4739-6918-bcd6-fbc1555afb61.png",
       "currentTeam": "Le Mans",
       "league": "France - Pro A",
       "leagueType": "Pro"
@@ -546,7 +546,7 @@
       "homeState": "MA",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642284.png",
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/4917149.png",
       "currentTeam": "Connecticut",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -584,7 +584,7 @@
       "homeState": "MO",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641750.png",
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/4576060.png",
       "currentTeam": "Creighton",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -717,7 +717,7 @@
       "homeState": "CA",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": null,
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/5107804.png",
       "currentTeam": "San Diego St",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -736,7 +736,7 @@
       "homeState": "TN",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": null,
+      "photoUrl": "https://utsports.com/images/2024/9/25/2_-_Chaz_Lanier.jpg",
       "currentTeam": "Tennessee",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -774,7 +774,7 @@
       "homeState": "FL",
       "homeCountry": "USA",
       "nationality": "USA",
-      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641780.png",
+      "photoUrl": "data:image/jpeg;base64,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",
       "currentTeam": "Auburn",
       "league": "NCAA D-I",
       "leagueType": "NCAA"
@@ -1040,7 +1040,7 @@
       "homeState": "NJ",
       "homeCountry": "Puerto Rico",
       "nationality": "Dominican Republic",
-      "photoUrl": null,
+      "photoUrl": "https://a.espncdn.com/combiner/i?img=/i/headshots/mens-college-basketball/players/full/5175737.png",
       "currentTeam": "UAB",
       "league": "NCAA D-I",
       "leagueType": "NCAA"

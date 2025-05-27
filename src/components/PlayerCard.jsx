@@ -44,7 +44,7 @@ const PlayerCard = ({ player }) => {
             sx={{
               width: imageDimension,
               height: imageDimension,
-              borderRadius: '50%', // Make it circular
+              borderRadius: '25%', // Make it circular
               objectFit: 'cover',
               flexShrink: 0 
             }}
