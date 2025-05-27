@@ -139,9 +139,9 @@ if (!selectedPlayer) {
     { key: 'AST', label: statDisplayType === 'perGame' ? 'APG' : 'AST' },
     { key: 'STL', label: statDisplayType === 'perGame' ? 'SPG' : 'STL' },
     { key: 'BLK', label: statDisplayType === 'perGame' ? 'BPG' : 'BLK' },
-    { key: 'FGM', label: 'FGM' }, { key: 'FGA', label: 'FGA' }, { key: 'FG%', label: 'FG%' },
-    { key: '3PM', label: '3PM' }, { key: '3PA', label: '3PA' }, { key: '3P%', label: '3P%' },
-    { key: 'FTM', label: 'FTM' }, { key: 'FTA', label: 'FTA' }, { key: 'FTP', label: 'FT%' },
+    { key: 'FG', label: 'FG' }, { key: 'FG%', label: 'FG%' },
+    { key: '3P', label: '3P' }, { key: '3P%', label: '3P%' },
+    { key: 'FT', label: 'FT' }, { key: 'FTP', label: 'FT%' },
   ];
 
   const gameLogTableHeaders = [
@@ -153,15 +153,12 @@ if (!selectedPlayer) {
     { key: 'ast', label: 'AST' },
     { key: 'stl', label: 'STL' },
     { key: 'blk', label: 'BLK' },
-    { key: 'fgm', label: 'FGM' },
-    { key: 'fga', label: 'FGA' },
-    { key: 'fg%', label: 'FG%' },
-    { key: 'tpm', label: '3PM' },
-    { key: 'tpa', label: '3PA' },
-    { key: 'tp%', label: '3P%' },
-    { key: 'ftm', label: 'FTM' },
-    { key: 'fta', label: 'FTA' },
-    { key: 'ft%', label: 'FT%' },
+    { key: 'FG', label: 'FG' }, // New combined header
+    { key: 'fg%', label: 'FG%' }, // Existing percentage header
+    { key: '3P', label: '3P' }, // New combined header
+    { key: 'tp%', label: '3P%' }, // Existing percentage header
+    { key: 'FT', label: 'FT' }, // New combined header
+    { key: 'ft%', label: 'FT%' }, // Existing percentage header
     { key: 'plusMinus', label: '+/-' },
   ];
 
@@ -266,11 +263,25 @@ if (!selectedPlayer) {
                               <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
                               <TableCell>{formatStat(log.TRB, divisor, 1)}</TableCell><TableCell>{formatStat(log.AST, divisor, 1)}</TableCell>
                               <TableCell>{formatStat(log.STL, divisor, 1)}</TableCell><TableCell>{formatStat(log.BLK, divisor, 1)}</TableCell>
-                              <TableCell>{formatStat(log.FGM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FGA, divisor, 1)}</TableCell>
-                              <TableCell>{formatPercentageStat(log['FG%'])}</TableCell><TableCell>{formatStat(log['3PM'], divisor, 1)}</TableCell>
-                              <TableCell>{formatStat(log['3PA'], divisor, 1)}</TableCell><TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
-                              <TableCell>{formatStat(log.FTM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FTA, divisor, 1)}</TableCell>
-                              <TableCell>{formatPercentageStat(log.FTP)}</TableCell>
+                              {/* FG, 3P, FT Cells for Season Logs */}
+                              <TableCell>
+                                {statDisplayType === 'perGame'
+                                  ? `${formatStat(log.FGM, divisor, 1)}-${formatStat(log.FGA, divisor, 1)}`
+                                  : `${log.FGM || 0}-${log.FGA || 0}`}
+                              </TableCell>
+                              <TableCell>{formatPercentageStat(log['FG%'])}</TableCell>
+                              <TableCell>
+                                {statDisplayType === 'perGame'
+                                  ? `${formatStat(log['3PM'], divisor, 1)}-${formatStat(log['3PA'], divisor, 1)}`
+                                  : `${log['3PM'] || 0}-${log['3PA'] || 0}`}
+                              </TableCell>
+                              <TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
+                              <TableCell>
+                                {statDisplayType === 'perGame'
+                                  ? `${formatStat(log.FTM, divisor, 1)}-${formatStat(log.FTA, divisor, 1)}`
+                                  : `${log.FTM || 0}-${log.FTA || 0}`}
+                              </TableCell>
+                              <TableCell>{formatPercentageStat(log['FT%'])}</TableCell> {/* Assuming FT% is the correct key for free throw percentage */}
                             </TableRow>
                           );
                         })}
@@ -310,14 +321,12 @@ if (!selectedPlayer) {
                                 <TableCell>{log.ast}</TableCell>
                                 <TableCell>{log.stl}</TableCell>
                                 <TableCell>{log.blk}</TableCell>
-                                <TableCell>{log.fgm}</TableCell>
-                                <TableCell>{log.fga}</TableCell>
+                                {/* FG, 3P, FT Cells for Game Logs */}
+                                <TableCell>{`${log.fgm != null ? log.fgm : '0'}-${log.fga != null ? log.fga : '0'}`}</TableCell>
                                 <TableCell>{formatPercentageStat(log['fg%'])}</TableCell>
-                                <TableCell>{log.tpm}</TableCell>
-                                <TableCell>{log.tpa}</TableCell>
+                                <TableCell>{`${log.tpm != null ? log.tpm : '0'}-${log.tpa != null ? log.tpa : '0'}`}</TableCell>
                                 <TableCell>{formatPercentageStat(log['tp%'])}</TableCell>
-                                <TableCell>{log.ftm}</TableCell>
-                                <TableCell>{log.fta}</TableCell>
+                                <TableCell>{`${log.ftm != null ? log.ftm : '0'}-${log.fta != null ? log.fta : '0'}`}</TableCell>
                                 <TableCell>{formatPercentageStat(log['ft%'])}</TableCell>
                                 <TableCell>{log.plusMinus}</TableCell>
                               </TableRow>
