@@ -28,12 +28,11 @@ const PlayerCard = ({ player }) => {
   const rank = player.scoutRankings?.averageMavericksRank;
   const displayRank = rank != null ? rank.toFixed(1) : 'N/A';
 
-  // Define a fixed height for the image/avatar area
-  const imageHeight = 150; // Example height, can be adjusted
-  const imageWidth = 120; // Example width, can be adjusted
+  // Define a fixed dimension for the circular image/avatar area
+  const imageDimension = 120; // Square dimension for circular display
 
   return (
-    <Card sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}> {/* Removed height: '100%' from Card */}
+    <Card sx={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', p: 1 }}> {/* Added alignItems and padding */}
       <CardActionArea 
         component={RouterLink} 
         to={`/player/${player.playerId}`} 
@@ -43,22 +42,22 @@ const PlayerCard = ({ player }) => {
           <CardMedia
             component="img"
             sx={{
-              width: imageWidth,
-              height: imageHeight,
+              width: imageDimension,
+              height: imageDimension,
+              borderRadius: '50%', // Make it circular
               objectFit: 'cover',
-              flexShrink: 0 // Prevent image from shrinking
+              flexShrink: 0 
             }}
             image={player.photoUrl}
             alt={`${player.firstName} ${player.lastName}`}
             onError={(e) => { e.target.src = placeholderImageUrl; }}
           />
         ) : (
-          <Avatar
-            variant="square"
+          <Avatar // Avatar is circular by default, removed variant="square"
             sx={{
-              width: imageWidth,
-              height: imageHeight,
-              fontSize: '2rem',
+              width: imageDimension,
+              height: imageDimension,
+              fontSize: '2rem', // Keep or adjust as needed
               backgroundColor: 'grey.300',
               display: 'flex',
               alignItems: 'center',
