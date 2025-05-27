@@ -139,9 +139,27 @@ if (!selectedPlayer) {
     { key: 'AST', label: statDisplayType === 'perGame' ? 'APG' : 'AST' },
     { key: 'STL', label: statDisplayType === 'perGame' ? 'SPG' : 'STL' },
     { key: 'BLK', label: statDisplayType === 'perGame' ? 'BPG' : 'BLK' },
-    { key: 'FGM', label: 'FGM' }, { key: 'FGA', label: 'FGA' }, { key: 'FG%', label: 'FG%' },
-    { key: '3PM', label: '3PM' }, { key: '3PA', label: '3PA' }, { key: '3P%', label: '3P%' },
-    { key: 'FTM', label: 'FTM' }, { key: 'FTA', label: 'FTA' }, { key: 'FTP', label: 'FT%' },
+    { key: 'FG', label: 'FG' }, { key: 'FG%', label: 'FG%' },
+    { key: '3P', label: '3P' }, { key: '3P%', label: '3P%' },
+    { key: 'FT', label: 'FT' }, { key: 'FTP', label: 'FT%' },
+  ];
+
+  const gameLogTableHeaders = [
+    { key: 'date', label: 'Date' },
+    { key: 'opponent', label: 'Opponent' },
+    { key: 'timePlayed', label: 'MP' },
+    { key: 'pts', label: 'PTS' },
+    { key: 'reb', label: 'REB' },
+    { key: 'ast', label: 'AST' },
+    { key: 'stl', label: 'STL' },
+    { key: 'blk', label: 'BLK' },
+    { key: 'FG', label: 'FG' }, // New combined header
+    { key: 'fg%', label: 'FG%' }, // Existing percentage header
+    { key: '3P', label: '3P' }, // New combined header
+    { key: 'tp%', label: '3P%' }, // Existing percentage header
+    { key: 'FT', label: 'FT' }, // New combined header
+    { key: 'ft%', label: 'FT%' }, // Existing percentage header
+    { key: 'plusMinus', label: '+/-' },
   ];
 
   const formatStat = (value, divisor = 1, toFixed = 1) => {
@@ -172,8 +190,24 @@ if (!selectedPlayer) {
             )}
             <Typography variant="h4" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
             <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-            <Typography variant="body1">Height: {getHeightInFeetInches(playerData.height)}</Typography>
-            <Typography variant="body1">Weight: {playerData.weight ? `${playerData.weight} lbs` : 'N/A'}</Typography>
+            <Typography variant="body1">
+              Height: {
+                playerData.measurements && playerData.measurements.heightShoes != null
+                  ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
+                  : playerData.height != null
+                    ? `${getHeightInFeetInches(playerData.height)} 🟡`
+                    : 'N/A'
+              }
+            </Typography>
+            <Typography variant="body1">
+              Weight: {
+                playerData.measurements && playerData.measurements.weight != null
+                  ? `${playerData.measurements.weight} lbs ✅`
+                  : playerData.weight != null
+                    ? `${playerData.weight} lbs 🟡`
+                    : 'N/A'
+              }
+            </Typography>
             <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
             <Typography variant="body1">High School: {playerData.highSchool || 'N/A'}</Typography>
             <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
@@ -191,7 +225,6 @@ if (!selectedPlayer) {
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Standing Reach: {getHeightInFeetInches(playerData.measurements.reach)}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Max Vertical: {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Weight: {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}</Typography></Grid>
-                <Grid size={{xs:12, sm:6, md:4}} ><Typography>Body Fat: {playerData.measurements.bodyFat != null ? `${playerData.measurements.bodyFat}%` : 'N/A'}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Length: {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}</Typography></Grid>
                 <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Width: {playerData.measurements.handWidth != null ? `${playerData.measurements.handWidth}"` : 'N/A'}</Typography></Grid>
               </Grid>
@@ -227,32 +260,102 @@ if (!selectedPlayer) {
                 <MenuItem value="totals">Season Totals</MenuItem>
               </Select>
             </FormControl>
-            {playerData.seasonLogs && playerData.seasonLogs.length > 0 ? (
-              <TableContainer>
-                <Table stickyHeader size="small">
-                  <TableHead><TableRow>{statHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
-                  <TableBody>
-                    {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
-                      const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = statDisplayType === 'perGame' && isValidGP ? gamesPlayed : 1;
-                      return (
-                        <TableRow key={(log.Season || 'N/A') + (log.currentTeam || 'N/A') + (log.League || 'N/A')}>
-                          <TableCell>{log.Season || 'N/A'}</TableCell><TableCell>{log.TeamAbbr || log.Team || 'N/A'}</TableCell><TableCell>{log.League || 'N/A'}</TableCell>
-                          <TableCell>{log.GP || '0'}</TableCell><TableCell>{log.GS || '0'}</TableCell>
-                          <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log.TRB, divisor, 1)}</TableCell><TableCell>{formatStat(log.AST, divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log.STL, divisor, 1)}</TableCell><TableCell>{formatStat(log.BLK, divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log.FGM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FGA, divisor, 1)}</TableCell>
-                          <TableCell>{formatPercentageStat(log['FG%'])}</TableCell><TableCell>{formatStat(log['3PM'], divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log['3PA'], divisor, 1)}</TableCell><TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
-                          <TableCell>{formatStat(log.FTM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FTA, divisor, 1)}</TableCell>
-                          <TableCell>{formatPercentageStat(log.FTP)}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ) : (<Typography>No season logs available.</Typography>)}
+
+            {statDisplayType === 'totals' && (
+              <>
+                {playerData.seasonLogs && playerData.seasonLogs.length > 0 ? (
+                  <TableContainer>
+                    <Table stickyHeader size="small">
+                      {/* Use statHeaders directly, their labels are already dynamic based on statDisplayType */}
+                      <TableHead><TableRow>{statHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
+                      <TableBody>
+                        {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
+                          const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = 1; // Always 1 for totals
+                          return (
+                            <TableRow key={(log.Season || 'N/A') + (log.currentTeam || 'N/A') + (log.League || 'N/A')}>
+                              <TableCell>{log.Season || 'N/A'}</TableCell><TableCell>{log.TeamAbbr || log.Team || 'N/A'}</TableCell><TableCell>{log.League || 'N/A'}</TableCell>
+                              <TableCell>{log.GP || '0'}</TableCell><TableCell>{log.GS || '0'}</TableCell>
+                              <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
+                              <TableCell>{formatStat(log.TRB, divisor, 1)}</TableCell><TableCell>{formatStat(log.AST, divisor, 1)}</TableCell>
+                              <TableCell>{formatStat(log.STL, divisor, 1)}</TableCell><TableCell>{formatStat(log.BLK, divisor, 1)}</TableCell>
+                              {/* FG, 3P, FT Cells for Season Logs */}
+                              <TableCell>
+                                {statDisplayType === 'perGame'
+                                  ? `${formatStat(log.FGM, divisor, 1)}-${formatStat(log.FGA, divisor, 1)}`
+                                  : `${log.FGM || 0}-${log.FGA || 0}`}
+                              </TableCell>
+                              <TableCell>{formatPercentageStat(log['FG%'])}</TableCell>
+                              <TableCell>
+                                {statDisplayType === 'perGame'
+                                  ? `${formatStat(log['3PM'], divisor, 1)}-${formatStat(log['3PA'], divisor, 1)}`
+                                  : `${log['3PM'] || 0}-${log['3PA'] || 0}`}
+                              </TableCell>
+                              <TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
+                              <TableCell>
+                                {statDisplayType === 'perGame'
+                                  ? `${formatStat(log.FTM, divisor, 1)}-${formatStat(log.FTA, divisor, 1)}`
+                                  : `${log.FTM || 0}-${log.FTA || 0}`}
+                              </TableCell>
+                              <TableCell>{formatPercentageStat(log['FT%'])}</TableCell> {/* Assuming FT% is the correct key for free throw percentage */}
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (<Typography>No season logs available.</Typography>)}
+              </>
+            )}
+
+            {statDisplayType === 'perGame' && (
+              <>
+                {(() => {
+                  // Use playerData.gameLogs directly, assuming it's pre-filtered and available
+                  // Ensure playerData.gameLogs exists and is an array before attempting to sort
+                  const gameLogsToDisplay = playerData.gameLogs && Array.isArray(playerData.gameLogs) 
+                    ? [...playerData.gameLogs] // Create a shallow copy before sorting to avoid mutating the original prop
+                    : [];
+
+                  // Sort the game logs by date in descending order
+                  const sortedGameLogs = gameLogsToDisplay.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                  if (sortedGameLogs.length > 0) {
+                    return (
+                      <TableContainer>
+                        <Table stickyHeader size="small">
+                          <TableHead><TableRow>{gameLogTableHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
+                          <TableBody>
+                            {sortedGameLogs.map(log => (
+                              // Ensure gameId is unique, or use a more robust key if necessary
+                              <TableRow key={log.gameId || Math.random()}> 
+                                <TableCell>{format(new Date(log.date), 'MM/dd/yyyy')}</TableCell>
+                                <TableCell>{log.opponent}</TableCell>
+                                <TableCell>{log.timePlayed}</TableCell>
+                                <TableCell>{log.pts}</TableCell>
+                                <TableCell>{log.reb}</TableCell>
+                                <TableCell>{log.ast}</TableCell>
+                                <TableCell>{log.stl}</TableCell>
+                                <TableCell>{log.blk}</TableCell>
+                                {/* FG, 3P, FT Cells for Game Logs */}
+                                <TableCell>{`${log.fgm != null ? log.fgm : '0'}-${log.fga != null ? log.fga : '0'}`}</TableCell>
+                                <TableCell>{formatPercentageStat(log['fg%'])}</TableCell>
+                                <TableCell>{`${log.tpm != null ? log.tpm : '0'}-${log.tpa != null ? log.tpa : '0'}`}</TableCell>
+                                <TableCell>{formatPercentageStat(log['tp%'])}</TableCell>
+                                <TableCell>{`${log.ftm != null ? log.ftm : '0'}-${log.fta != null ? log.fta : '0'}`}</TableCell>
+                                <TableCell>{formatPercentageStat(log['ft%'])}</TableCell>
+                                <TableCell>{log.plusMinus}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    );
+                  } else {
+                    return <Typography>No game logs available for this player.</Typography>;
+                  }
+                })()}
+              </>
+            )}
           </Paper>
 
           {/* Scouting Reports Section - Modified */}
