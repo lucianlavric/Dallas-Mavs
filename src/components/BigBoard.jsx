@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { loadPlayerData } from '../utils/dataProcessor';
 import PlayerCard from './PlayerCard';
+import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import { Link } from 'react-router-dom'; // Import Link
+
 
 const BigBoard = () => {
   const [players, setPlayers] = useState([]);
@@ -51,17 +52,17 @@ const BigBoard = () => {
       <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center', marginY: 3 }}>
         NBA Big Board
       </Typography>
-      <Grid container spacing={3}> {/* Removed columns={12} as it's default and often not needed */}
+      <Stack spacing={3}> {/* Removed columns={12} as it's default and often not needed */}
         {players.map((player, index) => (
           // Corrected Grid item props and made it full-width
-          <Grid item xs={12} key={player.playerId || `${player.name}-${index}`}>
+          <Grid size={{xs : 12}}  key={player.playerId || `${player.name}-${index}`}>
             {/* The Link component was here, but PlayerCard itself is now a CardActionArea which is a link */}
             {/* So, we can directly use PlayerCard if it handles its own navigation, or keep the Link if PlayerCard is not a link itself. */}
             {/* Based on PlayerCard.jsx, CardActionArea IS a RouterLink. So, no need for this Link here. */}
             <PlayerCard player={player} />
           </Grid>
         ))}
-      </Grid>
+      </Stack>
     </Container>
   );
 };
