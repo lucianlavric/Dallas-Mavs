@@ -62,7 +62,7 @@ const PlayerCard = ({ player }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0
+              flexShrink: 0 // Prevent avatar from shrinking
             }}
           >
             {player.firstName?.[0]}{player.lastName?.[0]}
