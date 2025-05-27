@@ -144,6 +144,27 @@ if (!selectedPlayer) {
     { key: 'FTM', label: 'FTM' }, { key: 'FTA', label: 'FTA' }, { key: 'FTP', label: 'FT%' },
   ];
 
+  const gameLogTableHeaders = [
+    { key: 'date', label: 'Date' },
+    { key: 'opponent', label: 'Opponent' },
+    { key: 'timePlayed', label: 'MP' },
+    { key: 'pts', label: 'PTS' },
+    { key: 'reb', label: 'REB' },
+    { key: 'ast', label: 'AST' },
+    { key: 'stl', label: 'STL' },
+    { key: 'blk', label: 'BLK' },
+    { key: 'fgm', label: 'FGM' },
+    { key: 'fga', label: 'FGA' },
+    { key: 'fg%', label: 'FG%' },
+    { key: 'tpm', label: '3PM' },
+    { key: 'tpa', label: '3PA' },
+    { key: 'tp%', label: '3P%' },
+    { key: 'ftm', label: 'FTM' },
+    { key: 'fta', label: 'FTA' },
+    { key: 'ft%', label: 'FT%' },
+    { key: 'plusMinus', label: '+/-' },
+  ];
+
   const formatStat = (value, divisor = 1, toFixed = 1) => {
     if (value == null) return 'N/A';
     const numValue = parseFloat(value);
@@ -227,32 +248,86 @@ if (!selectedPlayer) {
                 <MenuItem value="totals">Season Totals</MenuItem>
               </Select>
             </FormControl>
-            {playerData.seasonLogs && playerData.seasonLogs.length > 0 ? (
-              <TableContainer>
-                <Table stickyHeader size="small">
-                  <TableHead><TableRow>{statHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
-                  <TableBody>
-                    {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
-                      const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = statDisplayType === 'perGame' && isValidGP ? gamesPlayed : 1;
-                      return (
-                        <TableRow key={(log.Season || 'N/A') + (log.currentTeam || 'N/A') + (log.League || 'N/A')}>
-                          <TableCell>{log.Season || 'N/A'}</TableCell><TableCell>{log.TeamAbbr || log.Team || 'N/A'}</TableCell><TableCell>{log.League || 'N/A'}</TableCell>
-                          <TableCell>{log.GP || '0'}</TableCell><TableCell>{log.GS || '0'}</TableCell>
-                          <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log.TRB, divisor, 1)}</TableCell><TableCell>{formatStat(log.AST, divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log.STL, divisor, 1)}</TableCell><TableCell>{formatStat(log.BLK, divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log.FGM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FGA, divisor, 1)}</TableCell>
-                          <TableCell>{formatPercentageStat(log['FG%'])}</TableCell><TableCell>{formatStat(log['3PM'], divisor, 1)}</TableCell>
-                          <TableCell>{formatStat(log['3PA'], divisor, 1)}</TableCell><TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
-                          <TableCell>{formatStat(log.FTM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FTA, divisor, 1)}</TableCell>
-                          <TableCell>{formatPercentageStat(log.FTP)}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ) : (<Typography>No season logs available.</Typography>)}
+
+            {statDisplayType === 'totals' && (
+              <>
+                {playerData.seasonLogs && playerData.seasonLogs.length > 0 ? (
+                  <TableContainer>
+                    <Table stickyHeader size="small">
+                      {/* Use statHeaders directly, their labels are already dynamic based on statDisplayType */}
+                      <TableHead><TableRow>{statHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
+                      <TableBody>
+                        {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
+                          const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = 1; // Always 1 for totals
+                          return (
+                            <TableRow key={(log.Season || 'N/A') + (log.currentTeam || 'N/A') + (log.League || 'N/A')}>
+                              <TableCell>{log.Season || 'N/A'}</TableCell><TableCell>{log.TeamAbbr || log.Team || 'N/A'}</TableCell><TableCell>{log.League || 'N/A'}</TableCell>
+                              <TableCell>{log.GP || '0'}</TableCell><TableCell>{log.GS || '0'}</TableCell>
+                              <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
+                              <TableCell>{formatStat(log.TRB, divisor, 1)}</TableCell><TableCell>{formatStat(log.AST, divisor, 1)}</TableCell>
+                              <TableCell>{formatStat(log.STL, divisor, 1)}</TableCell><TableCell>{formatStat(log.BLK, divisor, 1)}</TableCell>
+                              <TableCell>{formatStat(log.FGM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FGA, divisor, 1)}</TableCell>
+                              <TableCell>{formatPercentageStat(log['FG%'])}</TableCell><TableCell>{formatStat(log['3PM'], divisor, 1)}</TableCell>
+                              <TableCell>{formatStat(log['3PA'], divisor, 1)}</TableCell><TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
+                              <TableCell>{formatStat(log.FTM, divisor, 1)}</TableCell><TableCell>{formatStat(log.FTA, divisor, 1)}</TableCell>
+                              <TableCell>{formatPercentageStat(log.FTP)}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (<Typography>No season logs available.</Typography>)}
+              </>
+            )}
+
+            {statDisplayType === 'perGame' && (
+              <>
+                {(() => {
+                  const playerGameLogs = playerData.game_logs && Array.isArray(playerData.game_logs)
+                    ? playerData.game_logs.filter(log => log.playerId === numericPlayerId)
+                    : [];
+                  
+                  const sortedGameLogs = playerGameLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                  if (sortedGameLogs.length > 0) {
+                    return (
+                      <TableContainer>
+                        <Table stickyHeader size="small">
+                          <TableHead><TableRow>{gameLogTableHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
+                          <TableBody>
+                            {sortedGameLogs.map(log => (
+                              <TableRow key={log.gameId}>
+                                <TableCell>{format(new Date(log.date), 'MM/dd/yyyy')}</TableCell>
+                                <TableCell>{log.opponent}</TableCell>
+                                <TableCell>{log.timePlayed}</TableCell>
+                                <TableCell>{log.pts}</TableCell>
+                                <TableCell>{log.reb}</TableCell>
+                                <TableCell>{log.ast}</TableCell>
+                                <TableCell>{log.stl}</TableCell>
+                                <TableCell>{log.blk}</TableCell>
+                                <TableCell>{log.fgm}</TableCell>
+                                <TableCell>{log.fga}</TableCell>
+                                <TableCell>{formatPercentageStat(log['fg%'])}</TableCell>
+                                <TableCell>{log.tpm}</TableCell>
+                                <TableCell>{log.tpa}</TableCell>
+                                <TableCell>{formatPercentageStat(log['tp%'])}</TableCell>
+                                <TableCell>{log.ftm}</TableCell>
+                                <TableCell>{log.fta}</TableCell>
+                                <TableCell>{formatPercentageStat(log['ft%'])}</TableCell>
+                                <TableCell>{log.plusMinus}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    );
+                  } else {
+                    return <Typography>No game logs available for this player.</Typography>;
+                  }
+                })()}
+              </>
+            )}
           </Paper>
 
           {/* Scouting Reports Section - Modified */}
