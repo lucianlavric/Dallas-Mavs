@@ -52,14 +52,28 @@ const BigBoard = () => {
         NBA Big Board
       </Typography>
       <Grid container columns={12} spacing={3}>
-        {players.map((player, index) => (
-          console.log(player.playerId),
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={player.playerId || `${player.name}-${index}`}>
-            <Link to={`/player/${player.playerId}`} style={{ textDecoration: 'none' }}>
-              <PlayerCard player={player} />
-            </Link>
-          </Grid>
-        ))}
+        {players.map((player, index) => {
+          // The lower the rank, the higher the elevation (max 12, min 1)
+          const rank = player.scoutRankings?.averageMavericksRank;
+          // If rank is null, treat as lowest elevation
+          const elevation = rank != null
+            ? Math.max(1, 12 - Math.round(rank)) // e.g. rank 1 => 11, rank 2 => 10, etc.
+            : 1;
+
+          return (
+            <Grid
+              key={player.playerId || `${player.name}-${index}`}
+              sx={{ width: '100%' }}
+              xs={12} sm={6} md={4} lg={3}
+            >
+              <Link to={`/player/${player.playerId}`} style={{ textDecoration: 'none' }}>
+                <Box sx={{ boxShadow: elevation, borderRadius: 2, transition: 'box-shadow 0.2s' }}>
+                  <PlayerCard player={player} />
+                </Box>
+              </Link>
+            </Grid>
+          );
+        })}
       </Grid>
     </Container>
   );

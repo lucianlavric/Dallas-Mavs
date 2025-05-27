@@ -181,36 +181,87 @@ if (!selectedPlayer) {
     <Container sx={{ mt: 3, mb: 3 }}>
       <Grid container spacing={3}>
         {/* Bio Section */}
-        <Grid>
-          <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-            {playerData.photoUrl ? (
-              <CardMedia component="img" image={playerData.photoUrl} alt={`${playerData.firstName} ${playerData.lastName}`} sx={{ width: '100%', mb: 2, borderRadius: '4px' }} onError={(e) => { e.target.src = placeholderImageUrl; }} />
-            ) : (
-              <Avatar variant="square" sx={{ width: '100%', height: 'auto', aspectRatio: '2/3', mb: 2, mx: 'auto', fontSize: '4rem' }}>{playerData.firstName?.[0]}{playerData.lastName?.[0]}</Avatar>
-            )}
-            <Typography variant="h4" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
-            <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-            <Typography variant="body1">
-              Height: {
-                playerData.measurements && playerData.measurements.heightShoes != null
-                  ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
-                  : playerData.height != null
-                    ? `${getHeightInFeetInches(playerData.height)} 🟡`
-                    : 'N/A'
-              }
-            </Typography>
-            <Typography variant="body1">
-              Weight: {
-                playerData.measurements && playerData.measurements.weight != null
-                  ? `${playerData.measurements.weight} lbs ✅`
-                  : playerData.weight != null
-                    ? `${playerData.weight} lbs 🟡`
-                    : 'N/A'
-              }
-            </Typography>
-            <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
-            <Typography variant="body1">High School: {playerData.highSchool || 'N/A'}</Typography>
-            <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
+        <Grid item xs={12}>
+          <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: '140px 1fr' },
+                gap: 2,
+                alignItems: 'center',
+              }}
+            >
+              {/* Left: Player Photo */}
+              <Box>
+                {playerData.photoUrl ? (
+                  <CardMedia
+                    component="img"
+                    image={playerData.photoUrl}
+                    alt={`${playerData.firstName} ${playerData.lastName}`}
+                    sx={{
+                      width: 140,
+                      height: 210,
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                      mx: { xs: 'auto', sm: 0 },
+                      display: 'block',
+                    }}
+                    onError={(e) => { e.target.src = placeholderImageUrl; }}
+                  />
+                ) : (
+                  <Avatar
+                    variant="square"
+                    sx={{
+                      width: 140,
+                      height: 210,
+                      mx: { xs: 'auto', sm: 0 },
+                      fontSize: '4rem',
+                      display: 'block',
+                    }}
+                  >
+                    {playerData.firstName?.[0]}{playerData.lastName?.[0]}
+                  </Avatar>
+                )}
+              </Box>
+              {/* Right: Bio */}
+              <Box>
+                <Typography variant="h4" component="h1" gutterBottom>
+                  {playerData.firstName} {playerData.lastName}
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                  Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}
+                </Typography>
+                <Typography variant="body1">
+                  Height: {
+                    playerData.measurements && playerData.measurements.heightShoes != null
+                      ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
+                      : playerData.height != null
+                        ? `${getHeightInFeetInches(playerData.height)} 🟡`
+                        : 'N/A'
+                  }
+                </Typography>
+                <Typography variant="body1">
+                  Weight: {
+                    playerData.measurements && playerData.measurements.weight != null
+                      ? `${playerData.measurements.weight} lbs ✅`
+                      : playerData.weight != null
+                        ? `${playerData.weight} lbs 🟡`
+                        : 'N/A'
+                  }
+                </Typography>
+                <Typography variant="body1">
+                  Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}
+                </Typography>
+                <Typography variant="body1">
+                  High School: {playerData.highSchool || 'N/A'}
+                </Typography>
+                <Typography variant="body1">
+                  Hometown: {playerData.homeTown || 'N/A'}
+                  {playerData.homeState ? `, ${playerData.homeState}` : ''}
+                  {playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}
+                </Typography>
+              </Box>
+            </Box>
           </Paper>
         </Grid>
 
