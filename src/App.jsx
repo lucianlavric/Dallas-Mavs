@@ -6,7 +6,6 @@ import theme from './theme'; // Import the custom theme
 import Navbar from './components/Navbar'; // Import Navbar
 import BigBoard from './components/BigBoard';
 import PlayerProfile from './components/PlayerProfile';
-// import './App.css'; 
 
 function App() {
   return (

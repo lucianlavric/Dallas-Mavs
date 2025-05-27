@@ -7,7 +7,7 @@ import { Link as RouterLink } from 'react-router-dom'; // Alias for clarity
 
 const Navbar = () => {
   return (
-    <AppBar position="static" sx={{ marginBottom: '2rem' }}> {/* Add some margin below the AppBar */}
+    <AppBar position="sticky" sx={{ marginBottom: '2rem' }}> {/* Add some margin below the AppBar */}
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <RouterLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>

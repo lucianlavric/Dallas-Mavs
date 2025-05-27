@@ -23,6 +23,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Stack from '@mui/material/Stack';
 import { format } from 'date-fns';
 
 
@@ -182,35 +183,40 @@ if (!selectedPlayer) {
       <Grid container spacing={3}>
         {/* Bio Section */}
         <Grid>
-          <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
             {playerData.photoUrl ? (
-              <CardMedia component="img" image={playerData.photoUrl} alt={`${playerData.firstName} ${playerData.lastName}`} sx={{ width: '100%', mb: 2, borderRadius: '4px' }} onError={(e) => { e.target.src = placeholderImageUrl; }} />
+              <CardMedia component="img" image={playerData.photoUrl} alt={`${playerData.firstName} ${playerData.lastName}`} sx={{ width: '25%' }} onError={(e) => { e.target.src = placeholderImageUrl; }} />
             ) : (
-              <Avatar variant="square" sx={{ width: '100%', height: 'auto', aspectRatio: '2/3', mb: 2, mx: 'auto', fontSize: '4rem' }}>{playerData.firstName?.[0]}{playerData.lastName?.[0]}</Avatar>
+              <Avatar variant="square" sx={{ width: '100%', height: 'auto', aspectRatio: '2/3', mx: 'auto', fontSize: '4rem' }}>{playerData.firstName?.[0]}{playerData.lastName?.[0]}</Avatar>
             )}
-            <Typography variant="h4" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
-            <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-            <Typography variant="body1">
-              Height: {
-                playerData.measurements && playerData.measurements.heightShoes != null
-                  ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
-                  : playerData.height != null
-                    ? `${getHeightInFeetInches(playerData.height)} 🟡`
-                    : 'N/A'
-              }
-            </Typography>
-            <Typography variant="body1">
-              Weight: {
-                playerData.measurements && playerData.measurements.weight != null
-                  ? `${playerData.measurements.weight} lbs ✅`
-                  : playerData.weight != null
-                    ? `${playerData.weight} lbs 🟡`
-                    : 'N/A'
-              }
-            </Typography>
-            <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
-            <Typography variant="body1">High School: {playerData.highSchool || 'N/A'}</Typography>
-            <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
+            
+            <Stack>
+              <Grid>
+                <Typography variant="h1" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
+                <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
+                <Typography variant="body1">
+                  Height: {
+                    playerData.measurements && playerData.measurements.heightShoes != null
+                      ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
+                      : playerData.height != null
+                        ? `${getHeightInFeetInches(playerData.height)} 🟡`
+                        : 'N/A'
+                  }
+                </Typography>
+                <Typography variant="body1">
+                  Weight: {
+                    playerData.measurements && playerData.measurements.weight != null
+                      ? `${playerData.measurements.weight} lbs ✅`
+                      : playerData.weight != null
+                        ? `${playerData.weight} lbs 🟡`
+                        : 'N/A'
+                  }
+                </Typography>
+                <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
+                <Typography variant="body1">High School: {playerData.highSchool || 'N/A'}</Typography>
+                <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
+              </Grid>
+            </Stack>
           </Paper>
         </Grid>
 
