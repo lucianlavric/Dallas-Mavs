@@ -284,11 +284,14 @@ if (!selectedPlayer) {
             {statDisplayType === 'perGame' && (
               <>
                 {(() => {
-                  const playerGameLogs = playerData.game_logs && Array.isArray(playerData.game_logs)
-                    ? playerData.game_logs.filter(log => log.playerId === numericPlayerId)
+                  // Use playerData.gameLogs directly, assuming it's pre-filtered and available
+                  // Ensure playerData.gameLogs exists and is an array before attempting to sort
+                  const gameLogsToDisplay = playerData.gameLogs && Array.isArray(playerData.gameLogs) 
+                    ? [...playerData.gameLogs] // Create a shallow copy before sorting to avoid mutating the original prop
                     : [];
-                  
-                  const sortedGameLogs = playerGameLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                  // Sort the game logs by date in descending order
+                  const sortedGameLogs = gameLogsToDisplay.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                   if (sortedGameLogs.length > 0) {
                     return (
@@ -297,7 +300,8 @@ if (!selectedPlayer) {
                           <TableHead><TableRow>{gameLogTableHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
                           <TableBody>
                             {sortedGameLogs.map(log => (
-                              <TableRow key={log.gameId}>
+                              // Ensure gameId is unique, or use a more robust key if necessary
+                              <TableRow key={log.gameId || Math.random()}> 
                                 <TableCell>{format(new Date(log.date), 'MM/dd/yyyy')}</TableCell>
                                 <TableCell>{log.opponent}</TableCell>
                                 <TableCell>{log.timePlayed}</TableCell>
