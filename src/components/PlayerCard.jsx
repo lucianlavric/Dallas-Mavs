@@ -44,7 +44,7 @@ const PlayerCard = ({ player }) => {
             sx={{
               width: imageDimension,
               height: imageDimension,
-              borderRadius: '25%', // Make it circular
+              borderRadius: '50%', // Make it circular
               objectFit: 'cover',
               flexShrink: 0 
             }}
@@ -62,7 +62,7 @@ const PlayerCard = ({ player }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0 // Prevent avatar from shrinking
+              flexShrink: 0
             }}
           >
             {player.firstName?.[0]}{player.lastName?.[0]}
