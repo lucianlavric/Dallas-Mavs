@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { loadPlayerData } from '../utils/dataProcessor';
-import { getHeightInFeetInches } from '../utils/playerUtils';
+import { getAge, getHeightInFeetInches } from '../utils/playerUtils';
 import ScoutingReportForm from './ScoutingReportForm'; // Import the form
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -178,7 +178,7 @@ if (!selectedPlayer) {
       <Grid container spacing={3}>
         {/* Bio Section */}
         <Grid>
-          <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
+          <Paper  elevation={3} sx={{ display: 'flex', flexDirection: 'row', height: '100%', bgcolor:"#0D47A1", color:"#ffffff"}}>
             {playerData.photoUrl ? (
               <CardMedia component="img" image={playerData.photoUrl} alt={`${playerData.firstName} ${playerData.lastName}`} sx={{ width: '25%' }} onError={(e) => { e.target.src = placeholderImageUrl; }} />
             ) : (
@@ -186,11 +186,11 @@ if (!selectedPlayer) {
             )}
             
             <Stack>
-              <Grid>
-                <Typography variant="h1" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
-                <Typography variant="subtitle1" gutterBottom>Team: {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
+              <Typography sx={{p:5, height:'70%'}} variant="h1" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
+              <Stack spacing={3}direction="row" alignItems={'flex-end'}>
+                <Typography variant="subtitle1" gutterBottom>Team<br /> {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
                 <Typography variant="body1">
-                  Height: {
+                  Height<br /> {
                     playerData.measurements && playerData.measurements.heightShoes != null
                       ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
                       : playerData.height != null
@@ -198,8 +198,8 @@ if (!selectedPlayer) {
                         : 'N/A'
                   }
                 </Typography>
-                <Typography variant="body1">
-                  Weight: {
+                <Typography variant="body1" sx={{display:'flex', alignItems:'center'}}>
+                  Weight<br /> {
                     playerData.measurements && playerData.measurements.weight != null
                       ? `${playerData.measurements.weight} lbs ✅`
                       : playerData.weight != null
@@ -207,9 +207,10 @@ if (!selectedPlayer) {
                         : 'N/A'
                   }
                 </Typography>
-                <Typography variant="body1">Born: {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
-                <Typography variant="body1">Hometown: {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
-              </Grid>
+                <Typography variant="body1">Born<br /> {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
+                <Typography variant="body1">Age<br /> {getAge(playerData.birthDate)}</Typography>
+                <Typography variant="body1">Hometown<br /> {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
+              </Stack>
             </Stack>
           </Paper>
         </Grid>
