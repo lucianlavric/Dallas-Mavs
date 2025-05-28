@@ -189,7 +189,14 @@ if (!selectedPlayer) {
                 )}
                 
                 <Stack>
-                  <Typography sx={{p:5, height:'70%'}} variant="h1" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
+                  <Container sx={{marginLeft:2, display:'flex', flexDirection:'column', height:'70%', alignContent:'flex-start', marginTop:6}}>
+                    <Typography sx={{marginLeft:.75, marginBottom:-1.5 }} variant="h4" component="div" >
+                      {playerData.position ? playerData.position : 'Position N/A'}
+                    </Typography>
+                    <Typography sx={{margin:0, fontSize:96}} variant="h1" component="div" >
+                      {playerData.firstName} {playerData.lastName}
+                    </Typography>                    
+                  </Container>
                   <Stack spacing={3} direction="row" sx={{ justifyContent: 'space-around', width: '100%' }}>
                     <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', flexGrow: 1 }}>Team<br /> {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
                     <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>
@@ -235,22 +242,47 @@ if (!selectedPlayer) {
 
               {/* Scout Rankings Section */}
               {Object.keys(individualScoutRanks).length > 0 && (
-                 <BlackBorderBox  sx={{ p: 2, mb: 3 }}>
-                  <Typography variant="h5" gutterBottom>Scout Rankings</Typography>
-                  {overallAverageRank != null && (<Typography variant="subtitle1" gutterBottom>Overall Calculated Average Rank: {overallAverageRank.toFixed(1)}</Typography>)}
-                  {playerData.scoutRankings?.averageMavericksRank != null && (<Typography variant="subtitle1" gutterBottom sx={{ fontStyle: 'italic' }}>Mavericks Average Rank (Provided): {playerData.scoutRankings.averageMavericksRank.toFixed(1)}</Typography>)}
-                  <List dense>
-                    {Object.entries(individualScoutRanks).map(([scout, rank]) => {
-                      let rankColor = 'text.primary'; let fontWeight = 'normal';
-                      if (overallAverageRank != null && rank != null) {
-                        if (rank < overallAverageRank - rankThreshold) { rankColor = 'success.main'; fontWeight = 'bold'; } 
-                        if (rank > overallAverageRank + rankThreshold) { rankColor = 'error.main'; fontWeight = 'bold'; }   
-                      }
-                      return (<ListItem key={scout} sx={{ py: 0.5 }}><ListItemText primary={<Typography component="span" sx={{ fontWeight: 'medium' }}>{scout.replace(/([A-Z])/g, ' $1').trim()}:</Typography>} secondary={<Typography component="span" sx={{ color: rankColor, fontWeight: fontWeight, ml: 0.5 }}>{rank != null ? `${rank}` : 'N/A'}</Typography>} /></ListItem>);
-                    })}
-                  </List>
-                </BlackBorderBox>
-              )}
+              <BlackBorderBox sx={{ p: 2, mb: 3 }}>
+                <Typography variant="h5" gutterBottom>Scout Rankings</Typography>
+                {overallAverageRank != null && (
+                  <Typography variant="subtitle1" gutterBottom>
+                    Overall Calculated Average Rank: {overallAverageRank.toFixed(1)}
+                  </Typography>
+                )}
+                {playerData.scoutRankings?.averageMavericksRank != null && (
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontStyle: 'italic' }}>
+                    Mavericks Average Rank (Provided): {playerData.scoutRankings.averageMavericksRank.toFixed(1)}
+                  </Typography>
+                )}
+                <Grid container spacing={1}>
+                  
+                  
+                  {Object.entries(individualScoutRanks).map(([scout, rank]) => {
+                    let rankColor = 'text.primary';
+                    let fontWeight = 'normal';
+                    if (overallAverageRank != null && rank != null) {
+                      if (rank < overallAverageRank - rankThreshold) { rankColor = 'success.main'; fontWeight = 'bold'; }
+                      if (rank > overallAverageRank + rankThreshold) { rankColor = 'error.main'; fontWeight = 'bold'; }
+                    }
+                    return (
+                      <Grid item xs={12} sm={6} md={4} key={scout}>
+                        <Typography component="span" sx={{ fontWeight: 'medium' }}>
+                          {scout.includes(' ')
+                            ? scout
+                            : /^[A-Z0-9]+$/.test(scout)
+                              ? scout
+                              : scout.replace(/([A-Z])/g, ' $1').trim()
+                          }:
+                        </Typography>
+                        <Typography component="span" sx={{ color: rankColor, fontWeight, ml: 1 }}>
+                          {rank != null ? `${rank}` : 'N/A'}
+                        </Typography>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </BlackBorderBox>
+            )}
               
               {/* Player Statistics Section */}
               <BlackBorderBox sx={{ p: 2, mb: 3 }}>
