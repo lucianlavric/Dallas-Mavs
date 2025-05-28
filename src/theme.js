@@ -103,7 +103,13 @@ const theme = createTheme({
                 textTransform: 'none', // More modern button text
             }
         }
-    }
+    },
+     MuiContainer: {
+      styleOverrides: {
+        disableGutters: {
+        },
+      },
+    },
   },
 });
 
