@@ -187,9 +187,9 @@ if (!selectedPlayer) {
             
             <Stack>
               <Typography sx={{p:5, height:'70%'}} variant="h1" component="h1" gutterBottom>{playerData.firstName} {playerData.lastName}</Typography>
-              <Stack spacing={3}direction="row" alignItems={'flex-end'}>
-                <Typography variant="subtitle1" gutterBottom>Team<br /> {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-                <Typography variant="body1">
+              <Stack spacing={3} direction="row" sx={{ justifyContent: 'space-around', width: '100%' }}>
+                <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', flexGrow: 1 }}>Team<br /> {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
+                <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>
                   Height<br /> {
                     playerData.measurements && playerData.measurements.heightShoes != null
                       ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
@@ -198,7 +198,7 @@ if (!selectedPlayer) {
                         : 'N/A'
                   }
                 </Typography>
-                <Typography variant="body1" sx={{display:'flex', alignItems:'center'}}>
+                <Typography variant="body1" sx={{display:'flex', alignItems:'center', textAlign: 'center', flexGrow: 1 }}>
                   Weight<br /> {
                     playerData.measurements && playerData.measurements.weight != null
                       ? `${playerData.measurements.weight} lbs ✅`
@@ -207,9 +207,9 @@ if (!selectedPlayer) {
                         : 'N/A'
                   }
                 </Typography>
-                <Typography variant="body1">Born<br /> {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
-                <Typography variant="body1">Age<br /> {getAge(playerData.birthDate)}</Typography>
-                <Typography variant="body1">Hometown<br /> {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
+                <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>Born<br /> {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
+                <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>Age<br /> {getAge(playerData.birthDate)}</Typography>
+                <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>Hometown<br /> {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
               </Stack>
             </Stack>
           </Paper>
