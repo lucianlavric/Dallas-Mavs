@@ -48,7 +48,7 @@ const BigBoard = () => {
   }
 
   return (
-    <Container>
+    <Container sx={{alignSelf: 'center'}}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center', marginY: 3 }}>
         NBA Big Board
       </Typography>

@@ -9,18 +9,18 @@ import PlayerProfile from './components/PlayerProfile';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} >
       <CssBaseline /> 
       <Navbar />
       <Container
-       
+        maxWidth={false}
+        disableGutters
         sx={{
           mt: 3,
           mb: 3,
-          // minHeight: '100vh', // Ensures the app covers the viewport height
           display: 'flex',
           flexDirection: 'column',
-          width: "100%",
+          alignItems:'stretch',
           px:0,
         }}
       >

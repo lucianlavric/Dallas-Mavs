@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: BebasNeue, inter;
   line-height: 1.5;
   font-weight: 400;
 
@@ -11,6 +11,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+
 }
 
 a {
@@ -25,8 +28,9 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column;
   min-width: 320px;
+  align-items: stretch;
   min-height: 100vh;
   padding: 0;
 
@@ -69,7 +73,8 @@ button:focus-visible {
   }
 }
 
-html, body, #root {
-
-  width: 100%;
+#root{
+  display: flex;
+  flex-direction: column;
 }
+
