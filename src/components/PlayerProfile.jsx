@@ -112,21 +112,44 @@ if (!selectedPlayer) {
 
   // Calculate overall average rank
   let sumOfRanks = 0;
+  let mavsSumOfRanks = 0;
   let numberOfScouts = 0;
+  let numberOfMavsScouts = 0;
   const individualScoutRanks = {};
 
   if (playerData.scoutRankings) {
-    Object.entries(playerData.scoutRankings).forEach(([scout, rank]) => {
-      if (typeof rank === 'number' && rank != null && scout !== 'averageMavericksRank' && scout !== 'playerId') {
+    // First, create a clean copy of rankings without the Scout High Low field
+    const cleanedRankings = { ...playerData.scoutRankings };
+    delete cleanedRankings['Scout High Low'];
+    delete cleanedRankings['ScoutHighLow'];
+    delete cleanedRankings['scoutHighLow'];
+
+    Object.entries(cleanedRankings).forEach(([scout, rank]) => {
+      // Skip non-ranking fields
+      if (scout === 'playerId' || 
+          scout === 'averageMavericksRank' || 
+          !scout) {
+        return;
+      }
+      
+      // Only process valid numeric ranks
+      if (typeof rank === 'number' && rank != null) {
+        individualScoutRanks[scout] = rank;
         sumOfRanks += rank;
         numberOfScouts++;
-        individualScoutRanks[scout] = rank;
-      } else if (scout !== 'averageMavericksRank' && scout !== 'playerId') {
+        
+        // Add to Mavs average only if not ESPN
+        if (!scout.includes('ESPN')) {
+          mavsSumOfRanks += rank;
+          numberOfMavsScouts++;
+        }
+      } else {
         individualScoutRanks[scout] = null;
       }
     });
   }
   const overallAverageRank = numberOfScouts > 0 ? sumOfRanks / numberOfScouts : null;
+  const mavsAverageRank = numberOfMavsScouts > 0 ? mavsSumOfRanks / numberOfMavsScouts : null;
   const rankThreshold = 5; 
 
   
@@ -141,16 +164,14 @@ if (!selectedPlayer) {
     { key: 'GP', label: 'GP' },
     { key: 'GS', label: 'GS' },
     { key: 'MP', label: 'MP' },
-    { key: 'FG', label: 'FG' },      // Combined FG
+    { key: 'FG', label: 'FG' },
     { key: 'FG%', label: 'FG%' },
-    { key: 'FG2M', label: '2PM' },
-    { key: 'FG2A', label: '2PA' },
-    { key: '2P', label: '2P' }, // Combined 2PM-2PA
+    { key: '2P', label: '2P' },
     { key: 'FG2%', label: '2P%' },
     { key: 'eFG%', label: 'eFG%' },
-    { key: '3P', label: '3P' },      // Combined 3P
+    { key: '3P', label: '3P' },
     { key: '3P%', label: '3P%' },
-    { key: 'FT', label: 'FT' },      // Combined FT
+    { key: 'FT', label: 'FT' },
     { key: 'FTP', label: 'FT%' },
     { key: 'ORB', label: 'ORB' },
     { key: 'DRB', label: 'DRB' },
@@ -360,34 +381,24 @@ if (!selectedPlayer) {
                     {/* Column 1 */}
                     <Grid item xs={12} sm={4}>
                       <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
-                        <span style={{ fontWeight: 'bold' }}>Height (No Shoes):</span> {getHeightInFeetInches(playerData.measurements.heightNoShoes)}
+                        <span style={{ fontWeight: 'bold' }}>Height (In Shoes):</span> {getHeightInFeetInches(playerData.measurements.heightShoes)}
                       </Typography>
                       <Typography sx={{ fontFamily: 'Inter' }}>
-                        <span style={{ fontWeight: 'bold' }}>Height (In Shoes):</span> {getHeightInFeetInches(playerData.measurements.heightShoes)}
+                        <span style={{ fontWeight: 'bold' }}>Wingspan:</span> {getHeightInFeetInches(playerData.measurements.wingspan)}
                       </Typography>
                     </Grid>
 
                     {/* Column 2 */}
                     <Grid item xs={12} sm={4}>
                       <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
-                        <span style={{ fontWeight: 'bold' }}>Wingspan:</span> {getHeightInFeetInches(playerData.measurements.wingspan)}
-                      </Typography>
-                      <Typography sx={{ fontFamily: 'Inter' }}>
                         <span style={{ fontWeight: 'bold' }}>Standing Reach:</span> {getHeightInFeetInches(playerData.measurements.reach)}
-                      </Typography>
-                    </Grid>
-
-                    {/* Column 3 */}
-                    <Grid item xs={12} sm={4}>
-                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
-                        <span style={{ fontWeight: 'bold' }}>Weight:</span> {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}
                       </Typography>
                       <Typography sx={{ fontFamily: 'Inter' }}>
                         <span style={{ fontWeight: 'bold' }}>Body Fat:</span> {playerData.measurements.bodyFat != null ? `${playerData.measurements.bodyFat}%` : 'N/A'}
                       </Typography>
                     </Grid>
 
-                    {/* Column 4 */}
+                    {/* Column 3 */}
                     <Grid item xs={12} sm={4}>
                       <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
                         <span style={{ fontWeight: 'bold' }}>Hand Length:</span> {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}
@@ -397,7 +408,7 @@ if (!selectedPlayer) {
                       </Typography>
                     </Grid>
 
-                    {/* Column 5 */}
+                    {/* Column 4 */}
                     <Grid item xs={12} sm={4}>
                       <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
                         <span style={{ fontWeight: 'bold' }}>Max Vertical:</span> {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}
@@ -407,7 +418,7 @@ if (!selectedPlayer) {
                       </Typography>
                     </Grid>
 
-                    {/* Column 6 */}
+                    {/* Column 5 */}
                     <Grid item xs={12} sm={4}>
                       <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
                         <span style={{ fontWeight: 'bold' }}>Sprint:</span> {playerData.measurements.sprint != null ? `${playerData.measurements.sprint}s` : 'N/A'}
@@ -422,57 +433,80 @@ if (!selectedPlayer) {
 
               {/* Scout Rankings Section */}
               {Object.keys(individualScoutRanks).length > 0 && (
-              <BlackBorderBox sx={{ p: 2, mb: 3 }}>
-                <Typography variant="h5" gutterBottom sx={{ fontFamily: 'BebasNeue' }}>
-                  Scout Rankings
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: 'Inter' }}>
-                  {overallAverageRank != null && (
-                    <>Overall Calculated Average Rank: {overallAverageRank.toFixed(1)}<br /></>
-                  )}
-                  {playerData.scoutRankings?.averageMavericksRank != null && (
-                    <span style={{ fontStyle: 'italic' }}>
-                      Mavericks Average Rank (Provided): {playerData.scoutRankings.averageMavericksRank.toFixed(1)}
-                    </span>
-                  )}
-                </Typography>
-                <Grid container spacing={1}>
-                  
-                  
-                  {Object.entries(individualScoutRanks).map(([scout, rank]) => {
-                    let rankColor = 'text.primary';
-                    if (overallAverageRank != null && rank != null) {
-                      if (rank < overallAverageRank - rankThreshold) { rankColor = 'success.main'; }
-                      if (rank > overallAverageRank + rankThreshold) { rankColor = 'error.main'; }
-                    }
-                    return (
-                      <Grid item xs={12} sm={6} md={4} key={scout}>
-                        <Typography
-                          component="span"
-                          sx={{ fontFamily: 'Inter', fontWeight: 'bold' }}
-                        >
-                          {(() => {
-                            let label = scout.includes(' ')
-                              ? scout
-                              : /^[A-Z0-9]+$/.test(scout)
-                                ? scout
-                                : scout.replace(/([A-Z])/g, ' $1').trim();
-                            // Capitalize first letter
-                            return label.charAt(0).toUpperCase() + label.slice(1);
-                          })()}:
-                        </Typography>
-                        <Typography
-                          component="span"
-                          sx={{ fontFamily: 'Inter', color: rankColor, fontWeight: 'normal', ml: 1 }}
-                        >
-                          {rank != null ? `${rank}` : 'N/A'}
-                        </Typography>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </BlackBorderBox>
-            )}
+  <BlackBorderBox sx={{ p: 2, mb: 3 }}>
+    <Typography variant="h5" gutterBottom sx={{ fontFamily: 'BebasNeue' }}>
+      Scout Rankings
+    </Typography>
+    
+    {/* Overall Rankings Summary */}
+    <Box sx={{ mb: 3, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+      {overallAverageRank != null && (
+        <Typography sx={{ fontFamily: 'Inter', mb: 1 }}>
+          <span style={{ fontWeight: 'bold' }}>Overall Average (Including ESPN):</span> {overallAverageRank.toFixed(1)}
+        </Typography>
+      )}
+      {mavsAverageRank != null && (
+        <Typography sx={{ fontFamily: 'Inter', fontStyle: 'italic' }}>
+          <span style={{ fontWeight: 'bold' }}>Mavericks Scout Average:</span> {mavsAverageRank.toFixed(1)}
+        </Typography>
+      )}
+    </Box>
+
+    {/* Individual Scout Rankings */}
+    <Grid container spacing={2}>
+      {Object.entries(individualScoutRanks).map(([scout, rank]) => {
+        const formattedScoutName = scout.includes(' ')
+          ? scout
+          : /^[A-Z0-9]+$/.test(scout)
+            ? scout
+            : scout.replace(/([A-Z])/g, ' $1').trim();
+        const displayName = formattedScoutName.charAt(0).toUpperCase() + formattedScoutName.slice(1);
+
+        let rankColor = 'text.primary';
+        let indicator = '';
+        
+        if (overallAverageRank != null && rank != null) {
+          if (rank < overallAverageRank - rankThreshold) {
+            rankColor = 'success.main';
+            indicator = ' (High)';
+          } else if (rank > overallAverageRank + rankThreshold) {
+            rankColor = 'error.main';
+            indicator = ' (Low)';
+          } else {
+            rankColor = 'text.primary';
+            indicator = '';
+          }
+        }
+
+        return (
+          <Grid item xs={12} sm={6} md={4} key={scout}>
+            <Box sx={{ 
+              p: 1.5, 
+              border: '1px solid #e0e0e0',
+              borderRadius: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              bgcolor: rank != null ? 'white' : '#f5f5f5'
+            }}>
+              <Typography sx={{ fontFamily: 'Inter', fontWeight: 'bold' }}>
+                {displayName}
+              </Typography>
+              <Typography sx={{ 
+                fontFamily: 'Inter',
+                color: rankColor,
+                fontWeight: rank != null ? 'medium' : 'normal',
+                marginLeft: 2
+              }}>
+                {rank != null ? `${rank}${indicator}` : 'Not Ranked'}
+              </Typography>
+            </Box>
+          </Grid>
+        );
+      })}
+    </Grid>
+  </BlackBorderBox>
+)}
               
               {/* Player Statistics Section */}
               <BlackBorderBox sx={{ p: 2, mb: 3, fontFamily: 'Inter' }}>
@@ -540,9 +574,9 @@ if (!selectedPlayer) {
         : header.key === '2P'
         ? `${log.FG2M != null ? log.FG2M : 0}-${log.FG2A != null ? log.FG2A : 0}`
         : header.key === 'FT'
-        ? `${log.FT != null ? log.FT : 0}-${log.FTA != null ? log.FTA : 0}`
-        : header.key === 'FTP'
-        ? (log.FTP != null ? `${Number(log.FTP).toFixed(1)}%` : 'N/A')
+        ? `${log.FTM != null ? log.FTM : 0}-${log.FTA != null ? log.FTA : 0}`
+        : header.key.includes('%')
+        ? (log[header.key] != null ? `${Number(log[header.key]).toFixed(1)}%` : 'N/A')
         : (log[header.key] != null ? log[header.key] : 'N/A')}
     </TableCell>
                                   ))}
@@ -575,7 +609,7 @@ if (!selectedPlayer) {
                             <Table stickyHeader size="small">
                               <TableHead>
                                 <TableRow>
-                                  {gameLogTableHeaders.map(header => (
+                                  {gameLogTableHeaders.map((header) => (  // Added missing parentheses
                                     <TableCell key={header.key} sx={{ fontWeight: 'bold', fontFamily: 'Inter' }}>
                                       {header.key === 'date' ? 'Date (2025)' : header.label}
                                     </TableCell>
