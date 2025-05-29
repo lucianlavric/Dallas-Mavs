@@ -134,8 +134,12 @@ const PlayerCard = memo(({ player }) => {
                 { label: 'BORN', value: new Date(player.birthDate).toLocaleDateString() },
                 { label: 'AGE', value: getAge(player.birthDate) }
               ].map((stat) => (
-                <Grid item xs={6} sm={2.4} key={stat.label}> {/* Changed xs to 6 for 2 stats per row on mobile */}
-                  <Box sx={{ textAlign: 'center', py: 0.25, px: 1 }}>
+                <Grid item xs={6} sm={2.4} key={stat.label}> 
+                  <Box sx={{ 
+                    textAlign: { xs: 'center', sm: 'left' }, // Center on mobile, left-align on larger screens
+                    py: 0.25, 
+                    px: 1 
+                  }}>
                     <Typography 
                       variant="caption" 
                       sx={{ 
