@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, FormControl } from '@mui/material';
 
 const ScoutingReportForm = ({ onAddReport }) => {
   const [scoutName, setScoutName] = useState('');
@@ -25,32 +25,40 @@ const ScoutingReportForm = ({ onAddReport }) => {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, p: 2, border: '1px solid #ddd', borderRadius: '4px' }}>
-      <Typography variant="h6" gutterBottom>Add New Scouting Report</Typography>
-      <TextField
-        label="Scout Name"
-        value={scoutName}
-        onChange={(e) => setScoutName(e.target.value)}
-        fullWidth
-        margin="normal"
-        variant="outlined" 
-        required 
-      />
-      <TextField
-        label="Report Text"
-        value={reportText}
-        onChange={(e) => setReportText(e.target.value)}
-        fullWidth
-        margin="normal"
-        multiline
-        rows={4}
-        variant="outlined"
-        required 
-      />
+      <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Inter' }}>Add New Scouting Report</Typography>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <TextField
+          multiline
+          rows={4}
+          label="Scouting Report"
+          value={reportText}
+          onChange={(e) => setReportText(e.target.value)}
+          sx={{ 
+            fontFamily: 'Inter',
+            '& .MuiInputBase-input': { fontFamily: 'Inter' },
+            '& .MuiInputLabel-root': { fontFamily: 'Inter' }
+          }}
+          required
+        />
+      </FormControl>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <TextField
+          label="Scout Name"
+          value={scoutName}
+          onChange={(e) => setScoutName(e.target.value)}
+          sx={{ 
+            fontFamily: 'Inter',
+            '& .MuiInputBase-input': { fontFamily: 'Inter' },
+            '& .MuiInputLabel-root': { fontFamily: 'Inter' }
+          }}
+          required
+        />
+      </FormControl>
       <Button 
         type="submit" 
         variant="contained" 
         color="primary" 
-        sx={{ mt: 1 }}
+        sx={{ mt: 1, fontFamily: 'Inter' }}
         disabled={isSubmitDisabled} 
       >
         Add Report

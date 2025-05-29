@@ -1,4 +1,5 @@
 import rawData from '../data/intern_project_data.json';
+import { parseISO, isAfter } from 'date-fns'; // Add this import at the top
 
 export const loadPlayerData = () => {
   const {
@@ -85,19 +86,66 @@ export const loadPlayerData = () => {
       }
     }
 
+    // --- Filter game logs by year and date constraints ---
+    const filteredGameLogs = game_logs.filter(log => {
+      if (log.playerId !== playerId) return false;
+      if (!log.date) return false;
+
+      const logDate = parseISO(log.date);
+      const minDate = new Date('2024-01-01');
+      if (logDate < minDate) return false;
+
+      // Determine league and cutoff date
+      const leagueName = log.league || '';
+      let cutoffDate;
+      if (leagueName.toLowerCase().includes('ncaa')) {
+        cutoffDate = new Date('2024-11-01');
+      } else {
+        cutoffDate = new Date('2024-10-01');
+      }
+      return isAfter(logDate, cutoffDate);
+    });
+
+    // --- Season logs: only keep most GP league for non-NCAA ---
+    // Only keep season logs for 2025
+    let playerSeasonLogs = (seasonLogsByPlayer[playerId] || []).filter(
+      log => String(log.Season || log.season) === '2025'
+    );
+
+    const isNCAA = (playerBio.league || '').toLowerCase().includes('ncaa');
+    if (!isNCAA && playerSeasonLogs.length > 0) {
+      // Group by league, sum GP
+      const leagueGPMap = {};
+      playerSeasonLogs.forEach(log => {
+        const league = (log.League || log.league || '').toLowerCase();
+        const gp = Number(log.GP || log.gp || 0);
+        if (!leagueGPMap[league]) leagueGPMap[league] = { logs: [], totalGP: 0 };
+        leagueGPMap[league].logs.push(log);
+        leagueGPMap[league].totalGP += gp;
+      });
+      // Find league with max GP
+      let maxGP = -1;
+      let bestLeague = null;
+      Object.entries(leagueGPMap).forEach(([league, { totalGP }]) => {
+        if (totalGP > maxGP) {
+          maxGP = totalGP;
+          bestLeague = league;
+        }
+      });
+      // Only keep logs from that league
+      if (bestLeague) {
+        playerSeasonLogs = leagueGPMap[bestLeague].logs;
+      }
+    }
+
     return {
       ...playerBio,
       scoutRankings: playerScoutRankings
         ? { ...playerScoutRankings, averageMavericksRank, scoutHighLow }
         : { averageMavericksRank, scoutHighLow },
       measurements: measurements.find(m => m.playerId === playerId) || {},
-      gameLogs: game_logs.filter(log => {
-        if (log.playerId !== playerId) return false;
-        const leagueName = log.league; // game_logs are expected to have 'league'
-        if (!leagueName) return true; // Keep if league name is missing
-        return !EXHIBITION_LEAGUE_NAMES_LOWERCASE.includes(leagueName.toLowerCase());
-      }),
-      seasonLogs: seasonLogsByPlayer[playerId] || [],
+      gameLogs: filteredGameLogs,
+      seasonLogs: playerSeasonLogs,
       scoutingReports: scoutingReportsByPlayer[playerId] || [],
     };
   });

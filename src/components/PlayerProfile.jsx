@@ -39,6 +39,7 @@ const PlayerProfile = () => {
 
   const BlackBorderBox = styled(Box)(({ theme }) => ({
     border: `1px solid ${theme.palette.common.black}`,
+    backgroundColor: "white",
   }));
 
  useEffect(() => {
@@ -132,17 +133,34 @@ if (!selectedPlayer) {
   const placeholderImageUrl = 'https://via.placeholder.com/300x450.png?text=No+Player+Image';
 
   const statHeaders = [
-    { key: 'Season', label: 'Season' }, { key: 'Team', label: 'Team' }, { key: 'League', label: 'Lg' },
-    { key: 'GP', label: 'GP' }, { key: 'GS', label: 'GS' },
-    { key: 'MP', label: statDisplayType === 'perGame' ? 'MPG' : 'MP' },
-    { key: 'PTS', label: statDisplayType === 'perGame' ? 'PPG' : 'PTS' },
-    { key: 'TRB', label: statDisplayType === 'perGame' ? 'RPG' : 'REB' },
-    { key: 'AST', label: statDisplayType === 'perGame' ? 'APG' : 'AST' },
-    { key: 'STL', label: statDisplayType === 'perGame' ? 'SPG' : 'STL' },
-    { key: 'BLK', label: statDisplayType === 'perGame' ? 'BPG' : 'BLK' },
-    { key: 'FG', label: 'FG' }, { key: 'FG%', label: 'FG%' },
-    { key: '3P', label: '3P' }, { key: '3P%', label: '3P%' },
-    { key: 'FT', label: 'FT' }, { key: 'FTP', label: 'FT%' },
+    { key: 'Season', label: 'Season' },
+    { key: 'League', label: 'League' },
+    { key: 'Team', label: 'Team' },
+    { key: 'w', label: 'W' },
+    { key: 'l', label: 'L' },
+    { key: 'GP', label: 'GP' },
+    { key: 'GS', label: 'GS' },
+    { key: 'MP', label: 'MP' },
+    { key: 'FG', label: 'FG' },      // Combined FG
+    { key: 'FG%', label: 'FG%' },
+    { key: 'FG2M', label: '2PM' },
+    { key: 'FG2A', label: '2PA' },
+    { key: '2P', label: '2P' }, // Combined 2PM-2PA
+    { key: 'FG2%', label: '2P%' },
+    { key: 'eFG%', label: 'eFG%' },
+    { key: '3P', label: '3P' },      // Combined 3P
+    { key: '3P%', label: '3P%' },
+    { key: 'FT', label: 'FT' },      // Combined FT
+    { key: 'FTP', label: 'FT%' },
+    { key: 'ORB', label: 'ORB' },
+    { key: 'DRB', label: 'DRB' },
+    { key: 'TRB', label: 'TRB' },
+    { key: 'AST', label: 'AST' },
+    { key: 'STL', label: 'STL' },
+    { key: 'BLK', label: 'BLK' },
+    { key: 'TOV', label: 'TOV' },
+    { key: 'PF', label: 'PF' },
+    { key: 'PTS', label: 'PTS' }
   ];
 
   const gameLogTableHeaders = [
@@ -181,45 +199,155 @@ if (!selectedPlayer) {
   return (
         <Container sx={{xs:12, md:10, display:'flex', flexDirection:'column', alignSelf:'stretch'}} >
               {/* Bio Section */}
-              <BlackBorderBox sx={{ display: 'flex', flexDirection: 'row', height: '100%', bgcolor:"#0D47A1", color:"#ffffff"}}>
+              <BlackBorderBox sx={{ display: 'flex', flexDirection: 'row', height: '100%', minHeight: 350, bgcolor: "#0D47A1", color: "#ffffff" }}>
                 {playerData.photoUrl ? (
-                  <CardMedia component="img" image={playerData.photoUrl} alt={`${playerData.firstName} ${playerData.lastName}`} sx={{ width: '25%' }} onError={(e) => { e.target.src = placeholderImageUrl; }} />
+                  <CardMedia
+                    component="img"
+                    image={playerData.photoUrl}
+                    alt={`${playerData.firstName} ${playerData.lastName}`}
+                    sx={{ width: '25%', minWidth: 120, objectFit: 'cover' }}
+                    onError={(e) => { e.target.src = placeholderImageUrl; }}
+                  />
                 ) : (
-                  <Avatar variant="square" sx={{ width: '100%', height: 'auto', aspectRatio: '2/3', mx: 'auto', fontSize: '4rem' }}>{playerData.firstName?.[0]}{playerData.lastName?.[0]}</Avatar>
+                  <Avatar
+                    variant="square"
+                    sx={{ width: '25%', minWidth: 120, aspectRatio: '2/3', mx: 'auto', fontSize: '4rem', objectFit: 'cover' }}
+                  >
+                    {playerData.firstName?.[0]}{playerData.lastName?.[0]}
+                  </Avatar>
                 )}
-                
-                <Stack>
-                  <Container sx={{marginLeft:2, display:'flex', flexDirection:'column', height:'70%', alignContent:'flex-start', marginTop:6}}>
-                    <Typography sx={{marginLeft:.75, marginBottom:-1.5 }} variant="h4" component="div" >
+
+                <Stack sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                  {/* Top section: Name, Position, Avg Rank */}
+                  <Box
+                    sx={{
+                      flex: 7,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      p: 2,
+                    }}
+                  >
+                    <Typography sx={{ marginLeft: .75, marginBottom: -1.5 }} variant="h4" component="div">
                       {playerData.position ? playerData.position : 'Position N/A'}
                     </Typography>
-                    <Typography sx={{margin:0, fontSize:96}} variant="h1" component="div" >
-                      {playerData.firstName} {playerData.lastName}
-                    </Typography>                    
-                  </Container>
-                  <Stack spacing={3} direction="row" sx={{ justifyContent: 'space-around', width: '100%' }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', flexGrow: 1 }}>Team<br /> {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}</Typography>
-                    <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>
-                      Height<br /> {
-                        playerData.measurements && playerData.measurements.heightShoes != null
-                          ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
-                          : playerData.height != null
-                            ? `${getHeightInFeetInches(playerData.height)} 🟡`
-                            : 'N/A'
-                      }
-                    </Typography>
-                    <Typography variant="body1" sx={{display:'flex', alignItems:'center', textAlign: 'center', flexGrow: 1 }}>
-                      Weight<br /> {
-                        playerData.measurements && playerData.measurements.weight != null
-                          ? `${playerData.measurements.weight} lbs ✅`
-                          : playerData.weight != null
-                            ? `${playerData.weight} lbs 🟡`
-                            : 'N/A'
-                      }
-                    </Typography>
-                    <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>Born<br /> {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}</Typography>
-                    <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>Age<br /> {getAge(playerData.birthDate)}</Typography>
-                    <Typography variant="body1" sx={{ textAlign: 'center', flexGrow: 1 }}>Hometown<br /> {playerData.homeTown || 'N/A'}{playerData.homeState ? `, ${playerData.homeState}` : ''}{playerData.homeCountry && playerData.homeCountry !== 'USA' ? `, ${playerData.homeCountry}` : ''}</Typography>
+                    <Box sx={{ 
+  display: 'flex', 
+  alignItems: 'center', 
+  width: '100%'
+}}>
+  <Typography 
+    sx={{ 
+      margin: 0, 
+      fontSize: 96,
+      flexShrink: 0 // Prevent name from shrinking
+    }} 
+    variant="h1" 
+    component="div"
+  >
+    {playerData.firstName} {playerData.lastName}
+  </Typography>
+  {overallAverageRank != null && (
+    <Box
+      sx={{
+        bgcolor: 'white',
+        color: '#0D47A1',
+        px: 3,
+        borderRadius: 2,
+        fontWeight: 'bold',
+        fontSize: 64,
+        boxShadow: 3,
+        minWidth: 120,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        mx: 'auto' // Add auto margin on both sides
+      }}
+    >
+      {overallAverageRank.toFixed(1)}
+      <Typography variant="caption" sx={{ color: '#0D47A1', fontWeight: 400, fontSize: 18, display: 'block', mt: -1 }}>
+        AVG RANK
+      </Typography>
+    </Box>
+  )}
+</Box>
+                  </Box>
+
+                  {/* Bottom section: Team, Height, Weight, Born, Age */}
+                  <Stack
+                    direction="row"
+                    sx={{
+                      flex: 3,
+                      borderTop: '3px solid #fff',
+                      width: '100%',
+                    }}
+                  >
+                    {/* Team */}
+                    <Box sx={{ flex: 1, p: 2, borderLeft: 'none', borderColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', fontFamily: 'BebasNeue' }}>
+                        TEAM
+                      </Typography>
+                      <Typography sx={{ textAlign: 'center', fontFamily: 'Inter' }}>
+                        {playerData.currentTeam || 'N/A'} {playerData.teamConference ? `(${playerData.teamConference})` : ''}
+                      </Typography>
+                    </Box>
+                    {/* Height */}
+                    <Box sx={{ flex: 1, p: 2, borderLeft: '3px solid #fff', borderColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', fontFamily: 'BebasNeue' }}>
+                        HEIGHT
+                      </Typography>
+                      <Typography sx={{ textAlign: 'center', fontFamily: 'Inter' }}>
+                        {
+                          playerData.measurements && playerData.measurements.heightShoes != null
+                            ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
+                            : playerData.height != null
+                              ? `${getHeightInFeetInches(playerData.height)} 🟡`
+                              : 'N/A'
+                        }
+                      </Typography>
+                    </Box>
+                    {/* Weight */}
+                    <Box sx={{ flex: 1, p: 2, borderLeft: '3px solid #fff', borderColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', fontFamily: 'BebasNeue' }}>
+                        WEIGHT
+                      </Typography>
+                      <Typography sx={{ textAlign: 'center', fontFamily: 'Inter' }}>
+                        {
+                          playerData.measurements && playerData.measurements.weight != null
+                            ? `${playerData.measurements.weight} lbs ✅`
+                            : playerData.weight != null
+                              ? `${playerData.weight} lbs 🟡`
+                              : 'N/A'
+                        }
+                      </Typography>
+                    </Box>
+                    {/* Born */}
+                    <Box sx={{ flex: 1, p: 2, borderLeft: '3px solid #fff', borderColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', fontFamily: 'BebasNeue' }}>
+                        BORN
+                      </Typography>
+                      <Typography sx={{ 
+    textAlign: 'center', 
+    fontFamily: 'Inter',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+  }}>
+    {playerData.birthDate ? format(new Date(playerData.birthDate), 'MMMM d, yyyy') : 'N/A'}
+  </Typography>
+                    </Box>
+                    {/* Age */}
+                    <Box sx={{ flex: 1, p: 2, borderLeft: '3px solid #fff', borderColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Typography variant="subtitle1" gutterBottom sx={{ textAlign: 'center', fontFamily: 'BebasNeue' }}>
+                        AGE
+                      </Typography>
+                      <Typography sx={{ textAlign: 'center', fontFamily: 'Inter' }}>
+                        {getAge(playerData.birthDate)}
+                      </Typography>
+                    </Box>
                   </Stack>
                 </Stack>
               </BlackBorderBox>
@@ -228,14 +356,66 @@ if (!selectedPlayer) {
               {playerData.measurements && Object.keys(playerData.measurements).length > 1 && (
                 <BlackBorderBox sx={{ p: 2, mb: 3}}>
                   <Typography variant="h5" gutterBottom>Measurements</Typography>
-                  <Grid container spacing={1}>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Wingspan: {getHeightInFeetInches(playerData.measurements.wingspan)}</Typography></Grid>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Height (No Shoes): {getHeightInFeetInches(playerData.measurements.heightNoShoes)}</Typography></Grid>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Standing Reach: {getHeightInFeetInches(playerData.measurements.reach)}</Typography></Grid>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Max Vertical: {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}</Typography></Grid>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Weight: {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}</Typography></Grid>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Length: {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}</Typography></Grid>
-                    <Grid size={{xs:12, sm:6, md:4}} ><Typography>Hand Width: {playerData.measurements.handWidth != null ? `${playerData.measurements.handWidth}"` : 'N/A'}</Typography></Grid>
+                  <Grid container spacing={2}>
+                    {/* Column 1 */}
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
+                        <span style={{ fontWeight: 'bold' }}>Height (No Shoes):</span> {getHeightInFeetInches(playerData.measurements.heightNoShoes)}
+                      </Typography>
+                      <Typography sx={{ fontFamily: 'Inter' }}>
+                        <span style={{ fontWeight: 'bold' }}>Height (In Shoes):</span> {getHeightInFeetInches(playerData.measurements.heightShoes)}
+                      </Typography>
+                    </Grid>
+
+                    {/* Column 2 */}
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
+                        <span style={{ fontWeight: 'bold' }}>Wingspan:</span> {getHeightInFeetInches(playerData.measurements.wingspan)}
+                      </Typography>
+                      <Typography sx={{ fontFamily: 'Inter' }}>
+                        <span style={{ fontWeight: 'bold' }}>Standing Reach:</span> {getHeightInFeetInches(playerData.measurements.reach)}
+                      </Typography>
+                    </Grid>
+
+                    {/* Column 3 */}
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
+                        <span style={{ fontWeight: 'bold' }}>Weight:</span> {playerData.measurements.weight != null ? `${playerData.measurements.weight} lbs` : 'N/A'}
+                      </Typography>
+                      <Typography sx={{ fontFamily: 'Inter' }}>
+                        <span style={{ fontWeight: 'bold' }}>Body Fat:</span> {playerData.measurements.bodyFat != null ? `${playerData.measurements.bodyFat}%` : 'N/A'}
+                      </Typography>
+                    </Grid>
+
+                    {/* Column 4 */}
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
+                        <span style={{ fontWeight: 'bold' }}>Hand Length:</span> {playerData.measurements.handLength != null ? `${playerData.measurements.handLength}"` : 'N/A'}
+                      </Typography>
+                      <Typography sx={{ fontFamily: 'Inter' }}>
+                        <span style={{ fontWeight: 'bold' }}>Hand Width:</span> {playerData.measurements.handWidth != null ? `${playerData.measurements.handWidth}"` : 'N/A'}
+                      </Typography>
+                    </Grid>
+
+                    {/* Column 5 */}
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
+                        <span style={{ fontWeight: 'bold' }}>Max Vertical:</span> {playerData.measurements.maxVertical != null ? `${playerData.measurements.maxVertical}"` : 'N/A'}
+                      </Typography>
+                      <Typography sx={{ fontFamily: 'Inter' }}>
+                        <span style={{ fontWeight: 'bold' }}>No Step Vertical:</span> {playerData.measurements.noStepVertical != null ? `${playerData.measurements.noStepVertical}"` : 'N/A'}
+                      </Typography>
+                    </Grid>
+
+                    {/* Column 6 */}
+                    <Grid item xs={12} sm={4}>
+                      <Typography sx={{ fontFamily: 'Inter', mb: 2 }}>
+                        <span style={{ fontWeight: 'bold' }}>Sprint:</span> {playerData.measurements.sprint != null ? `${playerData.measurements.sprint}s` : 'N/A'}
+                      </Typography>
+                      <Typography sx={{ fontFamily: 'Inter' }}>
+                        <span style={{ fontWeight: 'bold' }}>Lane Agility:</span> {playerData.measurements.agility != null ? `${playerData.measurements.agility}s` : 'N/A'}
+                      </Typography>
+                    </Grid>
                   </Grid>
                 </BlackBorderBox>
               )}
@@ -243,38 +423,48 @@ if (!selectedPlayer) {
               {/* Scout Rankings Section */}
               {Object.keys(individualScoutRanks).length > 0 && (
               <BlackBorderBox sx={{ p: 2, mb: 3 }}>
-                <Typography variant="h5" gutterBottom>Scout Rankings</Typography>
-                {overallAverageRank != null && (
-                  <Typography variant="subtitle1" gutterBottom>
-                    Overall Calculated Average Rank: {overallAverageRank.toFixed(1)}
-                  </Typography>
-                )}
-                {playerData.scoutRankings?.averageMavericksRank != null && (
-                  <Typography variant="subtitle1" gutterBottom sx={{ fontStyle: 'italic' }}>
-                    Mavericks Average Rank (Provided): {playerData.scoutRankings.averageMavericksRank.toFixed(1)}
-                  </Typography>
-                )}
+                <Typography variant="h5" gutterBottom sx={{ fontFamily: 'BebasNeue' }}>
+                  Scout Rankings
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom sx={{ fontFamily: 'Inter' }}>
+                  {overallAverageRank != null && (
+                    <>Overall Calculated Average Rank: {overallAverageRank.toFixed(1)}<br /></>
+                  )}
+                  {playerData.scoutRankings?.averageMavericksRank != null && (
+                    <span style={{ fontStyle: 'italic' }}>
+                      Mavericks Average Rank (Provided): {playerData.scoutRankings.averageMavericksRank.toFixed(1)}
+                    </span>
+                  )}
+                </Typography>
                 <Grid container spacing={1}>
                   
                   
                   {Object.entries(individualScoutRanks).map(([scout, rank]) => {
                     let rankColor = 'text.primary';
-                    let fontWeight = 'normal';
                     if (overallAverageRank != null && rank != null) {
-                      if (rank < overallAverageRank - rankThreshold) { rankColor = 'success.main'; fontWeight = 'bold'; }
-                      if (rank > overallAverageRank + rankThreshold) { rankColor = 'error.main'; fontWeight = 'bold'; }
+                      if (rank < overallAverageRank - rankThreshold) { rankColor = 'success.main'; }
+                      if (rank > overallAverageRank + rankThreshold) { rankColor = 'error.main'; }
                     }
                     return (
                       <Grid item xs={12} sm={6} md={4} key={scout}>
-                        <Typography component="span" sx={{ fontWeight: 'medium' }}>
-                          {scout.includes(' ')
-                            ? scout
-                            : /^[A-Z0-9]+$/.test(scout)
+                        <Typography
+                          component="span"
+                          sx={{ fontFamily: 'Inter', fontWeight: 'bold' }}
+                        >
+                          {(() => {
+                            let label = scout.includes(' ')
                               ? scout
-                              : scout.replace(/([A-Z])/g, ' $1').trim()
-                          }:
+                              : /^[A-Z0-9]+$/.test(scout)
+                                ? scout
+                                : scout.replace(/([A-Z])/g, ' $1').trim();
+                            // Capitalize first letter
+                            return label.charAt(0).toUpperCase() + label.slice(1);
+                          })()}:
                         </Typography>
-                        <Typography component="span" sx={{ color: rankColor, fontWeight, ml: 1 }}>
+                        <Typography
+                          component="span"
+                          sx={{ fontFamily: 'Inter', color: rankColor, fontWeight: 'normal', ml: 1 }}
+                        >
                           {rank != null ? `${rank}` : 'N/A'}
                         </Typography>
                       </Grid>
@@ -285,13 +475,21 @@ if (!selectedPlayer) {
             )}
               
               {/* Player Statistics Section */}
-              <BlackBorderBox sx={{ p: 2, mb: 3 }}>
-                <Typography variant="h5" gutterBottom>Player Statistics</Typography>
+              <BlackBorderBox sx={{ p: 2, mb: 3, fontFamily: 'Inter' }}>
+                <Typography variant="h5" gutterBottom sx={{ fontFamily: 'Inter' }}>
+                  Player Statistics
+                </Typography>
                 <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel id="stat-display-type-label">Stat Display</InputLabel>
-                  <Select labelId="stat-display-type-label" value={statDisplayType} label="Stat Display" onChange={handleStatTypeChange}>
-                    <MenuItem value="perGame">Per Game</MenuItem>
-                    <MenuItem value="totals">Season Totals</MenuItem>
+                  <InputLabel id="stat-display-type-label" sx={{ fontFamily: 'Inter' }}>Stat Display</InputLabel>
+                  <Select
+                    labelId="stat-display-type-label"
+                    value={statDisplayType}
+                    label="Stat Display"
+                    onChange={handleStatTypeChange}
+                    sx={{ fontFamily: 'Inter' }}
+                  >
+                    <MenuItem value="perGame" sx={{ fontFamily: 'Inter' }}>Per Game</MenuItem>
+                    <MenuItem value="totals" sx={{ fontFamily: 'Inter' }}>Season Averages</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -300,127 +498,204 @@ if (!selectedPlayer) {
                     {playerData.seasonLogs && playerData.seasonLogs.length > 0 ? (
                       <TableContainer>
                         <Table stickyHeader size="small">
-                          {/* Use statHeaders directly, their labels are already dynamic based on statDisplayType */}
-                          <TableHead><TableRow>{statHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
+                          <TableHead>
+                            <TableRow>
+                              {statHeaders.map(header => (
+                                <TableCell
+  key={header.key}
+  sx={{
+    fontWeight: 'bold',
+    fontFamily: 'Inter',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: 120 // adjust as needed
+  }}
+>
+  {header.label}
+</TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
                           <TableBody>
                             {playerData.seasonLogs.sort((a, b) => b.Season - a.Season).map(log => {
-                              const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = 1; // Always 1 for totals
+                              const gamesPlayed = parseFloat(log.GP); const isValidGP = gamesPlayed > 0; const divisor = 1;
                               return (
-                                <TableRow key={(log.Season || 'N/A') + (log.currentTeam || 'N/A') + (log.League || 'N/A')}>
-                                  <TableCell>{log.Season || 'N/A'}</TableCell><TableCell>{log.TeamAbbr || log.Team || 'N/A'}</TableCell><TableCell>{log.League || 'N/A'}</TableCell>
-                                  <TableCell>{log.GP || '0'}</TableCell><TableCell>{log.GS || '0'}</TableCell>
-                                  <TableCell>{formatStat(log.MP, divisor, 1)}</TableCell><TableCell>{formatStat(log.PTS, divisor, 1)}</TableCell>
-                                  <TableCell>{formatStat(log.TRB, divisor, 1)}</TableCell><TableCell>{formatStat(log.AST, divisor, 1)}</TableCell>
-                                  <TableCell>{formatStat(log.STL, divisor, 1)}</TableCell><TableCell>{formatStat(log.BLK, divisor, 1)}</TableCell>
-                                  {/* FG, 3P, FT Cells for Season Logs */}
-                                  <TableCell>
-                                    {statDisplayType === 'perGame'
-                                      ? `${formatStat(log.FGM, divisor, 1)}-${formatStat(log.FGA, divisor, 1)}`
-                                      : `${log.FGM || 0}-${log.FGA || 0}`}
-                                  </TableCell>
-                                  <TableCell>{formatPercentageStat(log['FG%'])}</TableCell>
-                                  <TableCell>
-                                    {statDisplayType === 'perGame'
-                                      ? `${formatStat(log['3PM'], divisor, 1)}-${formatStat(log['3PA'], divisor, 1)}`
-                                      : `${log['3PM'] || 0}-${log['3PA'] || 0}`}
-                                  </TableCell>
-                                  <TableCell>{formatPercentageStat(log['3P%'])}</TableCell>
-                                  <TableCell>
-                                    {statDisplayType === 'perGame'
-                                      ? `${formatStat(log.FTM, divisor, 1)}-${formatStat(log.FTA, divisor, 1)}`
-                                      : `${log.FTM || 0}-${log.FTA || 0}`}
-                                  </TableCell>
-                                  <TableCell>{formatPercentageStat(log['FT%'])}</TableCell> {/* Assuming FT% is the correct key for free throw percentage */}
+                                <TableRow key={log.Season + log.Team + log.League}>
+                                  {statHeaders.map(header => (
+                                    <TableCell
+      key={header.key}
+      sx={{
+        fontFamily: 'Inter',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        maxWidth: 90
+      }}
+    >
+      {header.key === 'FG'
+        ? `${log.FGM != null ? log.FGM : 0}-${log.FGA != null ? log.FGA : 0}`
+        : header.key === '3P'
+        ? `${log['3PM'] != null ? log['3PM'] : 0}-${log['3PA'] != null ? log['3PA'] : 0}`
+        : header.key === '2P'
+        ? `${log.FG2M != null ? log.FG2M : 0}-${log.FG2A != null ? log.FG2A : 0}`
+        : header.key === 'FT'
+        ? `${log.FT != null ? log.FT : 0}-${log.FTA != null ? log.FTA : 0}`
+        : header.key === 'FTP'
+        ? (log.FTP != null ? `${Number(log.FTP).toFixed(1)}%` : 'N/A')
+        : (log[header.key] != null ? log[header.key] : 'N/A')}
+    </TableCell>
+                                  ))}
                                 </TableRow>
                               );
                             })}
                           </TableBody>
                         </Table>
                       </TableContainer>
-                    ) : (<Typography>No season logs available.</Typography>)}
+                    ) : (
+                      <Typography sx={{ fontFamily: 'Inter' }}>No season logs available.</Typography>
+                    )}
                   </>
                 )}
 
                 {statDisplayType === 'perGame' && (
                   <>
                     {(() => {
-                      // Use playerData.gameLogs directly, assuming it's pre-filtered and available
-                      // Ensure playerData.gameLogs exists and is an array before attempting to sort
-                      const gameLogsToDisplay = playerData.gameLogs && Array.isArray(playerData.gameLogs) 
-                        ? [...playerData.gameLogs] // Create a shallow copy before sorting to avoid mutating the original prop
+                      const gameLogsToDisplay = playerData.gameLogs && Array.isArray(playerData.gameLogs)
+                        ? [...playerData.gameLogs]
                         : [];
-
-                      // Sort the game logs by date in descending order
                       const sortedGameLogs = gameLogsToDisplay.sort((a, b) => new Date(b.date) - new Date(a.date));
-
                       if (sortedGameLogs.length > 0) {
                         return (
+                          <>
+                          <Typography variant="caption" sx={{ fontFamily: 'Inter', mb: 1, display: 'block', color: 'text.secondary' }}>
+  2025 Season
+</Typography>
                           <TableContainer>
                             <Table stickyHeader size="small">
-                              <TableHead><TableRow>{gameLogTableHeaders.map(header => (<TableCell key={header.key} sx={{ fontWeight: 'bold' }}>{header.label}</TableCell>))}</TableRow></TableHead>
+                              <TableHead>
+                                <TableRow>
+                                  {gameLogTableHeaders.map(header => (
+                                    <TableCell key={header.key} sx={{ fontWeight: 'bold', fontFamily: 'Inter' }}>
+                                      {header.key === 'date' ? 'Date (2025)' : header.label}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
                               <TableBody>
                                 {sortedGameLogs.map(log => (
-                                  // Ensure gameId is unique, or use a more robust key if necessary
-                                  <TableRow key={log.gameId || Math.random()}> 
-                                    <TableCell>{format(new Date(log.date), 'MM/dd/yyyy')}</TableCell>
-                                    <TableCell>{log.opponent}</TableCell>
-                                    <TableCell>{log.timePlayed}</TableCell>
-                                    <TableCell>{log.pts}</TableCell>
-                                    <TableCell>{log.reb}</TableCell>
-                                    <TableCell>{log.ast}</TableCell>
-                                    <TableCell>{log.stl}</TableCell>
-                                    <TableCell>{log.blk}</TableCell>
-                                    {/* FG, 3P, FT Cells for Game Logs */}
-                                    <TableCell>{`${log.fgm != null ? log.fgm : '0'}-${log.fga != null ? log.fga : '0'}`}</TableCell>
-                                    <TableCell>{formatPercentageStat(log['fg%'])}</TableCell>
-                                    <TableCell>{`${log.tpm != null ? log.tpm : '0'}-${log.tpa != null ? log.tpa : '0'}`}</TableCell>
-                                    <TableCell>{formatPercentageStat(log['tp%'])}</TableCell>
-                                    <TableCell>{`${log.ftm != null ? log.ftm : '0'}-${log.fta != null ? log.fta : '0'}`}</TableCell>
-                                    <TableCell>{formatPercentageStat(log['ft%'])}</TableCell>
-                                    <TableCell>{log.plusMinus}</TableCell>
+                                  <TableRow key={log.gameId || Math.random()}>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {format(new Date(log.date), 'MM/dd')}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.opponent}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.timePlayed}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.pts}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.reb}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.ast}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.stl}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.blk}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {`${log.fgm != null ? log.fgm : '0'}-${log.fga != null ? log.fga : '0'}`}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {formatPercentageStat(log['fg%'])}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {`${log.tpm != null ? log.tpm : '0'}-${log.tpa != null ? log.tpa : '0'}`}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {formatPercentageStat(log['tp%'])}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {`${log.ftm != null ? log.ftm : '0'}-${log.fta != null ? log.fta : '0'}`}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {formatPercentageStat(log['ft%'])}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: 'Inter', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 90 }}>
+                                      {log.plusMinus}
+                                    </TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
                             </Table>
                           </TableContainer>
+                          </>
                         );
                       } else {
-                        return <Typography>No game logs available for this player.</Typography>;
+                        return <Typography sx={{ fontFamily: 'Inter' }}>No game logs available for this player.</Typography>;
                       }
                     })()}
                   </>
                 )}
               </BlackBorderBox>
 
-              {/* Scouting Reports Section - Modified */}
+              {/* Scouting Reports Section */}
               <BlackBorderBox sx={{ p: 2, mb: 3 }}>
                 <Typography variant="h5" gutterBottom>Scouting Reports</Typography>
                 {/* Display existing reports from playerData.scoutingReports */}
                 {playerData.scoutingReports && playerData.scoutingReports.length > 0 ? (
-                  <List dense sx={{ mb: newScoutingReports.length > 0 ? 2 : 0 }}> {/* Add margin if new reports will follow */}
+                  <List dense sx={{ mb: newScoutingReports.length > 0 ? 2 : 0, fontFamily: 'Inter' }}>
                     {playerData.scoutingReports.map((report) => (
                       <ListItem key={report.reportId || report.scout || Math.random()} alignItems="flex-start" sx={{ borderBottom: '1px solid #eee', '&:last-child': { borderBottom: 'none' } }}>
                         <ListItemText
-                          primary={<Typography variant="subtitle2" component="span" sx={{ fontWeight: 'bold' }}>{report.scout || 'Unknown Scout'} {report.date ? ` - ${format(new Date(report.date), 'MM/dd/yyyy')}` : ''}</Typography>}
-                          secondary={<Typography component="span" variant="body2" sx={{ display: 'block', whiteSpace: 'pre-wrap' }}>{report.report}</Typography>}
+                          primary={
+                            <Typography variant="subtitle2" component="span" sx={{ fontFamily: 'Inter', fontWeight: 'bold' }}>
+                              {report.scout || 'Unknown Scout'} {report.date ? ` - ${format(new Date(report.date), 'MM/dd/yyyy')}` : ''}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography component="span" variant="body2" sx={{ fontFamily: 'Inter', display: 'block', whiteSpace: 'pre-wrap' }}>
+                              {report.report}
+                            </Typography>
+                          }
                         />
                       </ListItem>
                     ))}
                   </List>
                 ) : (
-                  <Typography sx={{ mb: newScoutingReports.length > 0 ? 2 : 0, fontStyle: 'italic' }}>No existing scouting reports.</Typography>
+                  <Typography sx={{ mb: newScoutingReports.length > 0 ? 2 : 0, fontStyle: 'italic', fontFamily: 'Inter' }}>
+                    No existing scouting reports.
+                  </Typography>
                 )}
 
                 {/* Display new reports */}
                 {newScoutingReports.length > 0 && (
                   <BlackBorderBox sx={{ mt: (playerData.scoutingReports && playerData.scoutingReports.length > 0) ? 2 : 0 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>Newly Added Reports:</Typography>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', fontFamily: 'Inter' }}>
+                      Newly Added Reports:
+                    </Typography>
                     <List dense>
                       {newScoutingReports.map((report) => (
                         <ListItem key={report.reportId} alignItems="flex-start" sx={{ borderBottom: '1px solid #eee', '&:last-child': { borderBottom: 'none' }}}>
                           <ListItemText
-                            primary={<Typography variant="subtitle2" component="span" sx={{ fontWeight: 'bold' }}>{report.scout} - <Typography component="span" variant="caption">{format(new Date(report.date), 'MM/dd/yyyy HH:mm')}</Typography></Typography>}
-                            secondary={<Typography component="span" variant="body2" sx={{ display: 'block', whiteSpace: 'pre-wrap' }}>{report.report}</Typography>}
+                            primary={
+                              <Typography variant="subtitle2" component="span" sx={{ fontFamily: 'Inter', fontWeight: 'bold' }}>
+                                {report.scout} - <Typography component="span" variant="caption" sx={{ fontFamily: 'Inter' }}>
+                                  {format(new Date(report.date), 'MM/dd/yyyy HH:mm')}
+                                </Typography>
+                              </Typography>
+                            }
+                            secondary={
+                              <Typography component="span" variant="body2" sx={{ fontFamily: 'Inter', display: 'block', whiteSpace: 'pre-wrap' }}>
+                                {report.report}
+                              </Typography>
+                            }
                           />
                         </ListItem>
                       ))}
