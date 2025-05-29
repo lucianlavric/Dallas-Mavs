@@ -1,41 +1,54 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { loadPlayerData } from '../utils/dataProcessor';
 import PlayerCard from './PlayerCard';
-import Stack from '@mui/material/Stack';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import useDebounce from '../hooks/useDebounce';
+import { Stack, Container, Typography, Grid, CircularProgress, Box, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 const BigBoard = () => {
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm);
+
+  // Memoize the sorting function
+  const sortPlayers = useCallback((data) => {
+    return [...data].sort((a, b) => {
+      const rankA = a.scoutRankings?.averageMavericksRank ?? Infinity;
+      const rankB = b.scoutRankings?.averageMavericksRank ?? Infinity;
+      return rankA - rankB;
+    });
+  }, []);
+
+  // Memoize the filtered players
+  const filteredPlayers = useMemo(() => {
+    if (!debouncedSearchTerm) return players;
+    
+    const searchLower = debouncedSearchTerm.toLowerCase();
+    return players.filter(player => {
+      const fullName = `${player.firstName} ${player.lastName}`.toLowerCase();
+      return fullName.includes(searchLower) || 
+             player.currentTeam?.toLowerCase().includes(searchLower) ||
+             player.position?.toLowerCase().includes(searchLower);
+    });
+  }, [players, debouncedSearchTerm]);
 
   useEffect(() => {
-    try {
-      const data = loadPlayerData();
-      // Sort players by averageMavericksRank.
-      // Handle cases where averageMavericksRank might be null or undefined.
-      const sortedData = data.sort((a, b) => {
-        const rankA = a.scoutRankings?.averageMavericksRank;
-        const rankB = b.scoutRankings?.averageMavericksRank;
+    const initializePlayers = async () => {
+      try {
+        const data = loadPlayerData();
+        const sortedData = sortPlayers(data);
+        setPlayers(sortedData);
+      } catch (error) {
+        console.error("Error loading player data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        if (rankA == null && rankB == null) return 0;
-        if (rankA == null) return 1; // Place players with no rank at the end
-        if (rankB == null) return -1; // Place players with no rank at the beginning (lower rank is better)
-
-        return rankA - rankB;
-      });
-      setPlayers(sortedData);
-    } catch (error) {
-      console.error("Error loading or processing player data:", error);
-      // Optionally, set an error state here to display to the user
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    initializePlayers();
+  }, [sortPlayers]);
 
   if (loading) {
     return (
@@ -48,19 +61,58 @@ const BigBoard = () => {
   }
 
   return (
-    <Container sx={{alignSelf: 'center'}}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center', marginY: 3 }}>
+    <Container>
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        sx={{ 
+          textAlign: 'center', 
+          my: 3,
+          fontWeight: 'bold',
+          color: '#1e3c72'
+        }}
+      >
         NBA Big Board
       </Typography>
-      <Stack spacing={3}> {/* Removed columns={12} as it's default and often not needed */}
-        {players.map((player, index) => (
-          // Corrected Grid item props and made it full-width
-          <Grid size={{xs : 12}}  key={player.playerId || `${player.name}-${index}`}>
-            {/* The Link component was here, but PlayerCard itself is now a CardActionArea which is a link */}
-            {/* So, we can directly use PlayerCard if it handles its own navigation, or keep the Link if PlayerCard is not a link itself. */}
-            {/* Based on PlayerCard.jsx, CardActionArea IS a RouterLink. So, no need for this Link here. */}
-            <PlayerCard player={player} />
-          </Grid>
+      
+      {/* Search Bar */}
+      <Box sx={{ 
+        mb: 4,
+        width: '100%', // Changed from maxWidth: 600
+        mx: 'auto'
+      }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search players..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            sx: {
+              borderRadius: 2,
+              bgcolor: 'white',
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#e0e0e0',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#1976D2',
+              },
+            }
+          }}
+        />
+      </Box>
+
+      <Stack spacing={2}>
+        {filteredPlayers.map((player) => (
+          <PlayerCard 
+            key={player.playerId} 
+            player={player} 
+          />
         ))}
       </Stack>
     </Container>
