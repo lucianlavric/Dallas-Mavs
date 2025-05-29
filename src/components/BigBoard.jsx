@@ -61,15 +61,16 @@ const BigBoard = () => {
   }
 
   return (
-    <Container>
+    <Container sx={{ px: { xs: 1, sm: 2, md: 3 } }}>
       <Typography 
         variant="h4" 
         component="h1" 
         sx={{ 
           textAlign: 'center', 
-          my: 3,
+          my: { xs: 2, sm: 3 },
           fontWeight: 'bold',
-          color: '#1e3c72'
+          color: '#1e3c72',
+          fontSize: { xs: '1.8rem', sm: '2rem', md: '2.25rem' }
         }}
       >
         NBA Big Board
@@ -77,8 +78,8 @@ const BigBoard = () => {
       
       {/* Search Bar */}
       <Box sx={{ 
-        mb: 4,
-        width: '100%', // Changed from maxWidth: 600
+        mb: { xs: 2, sm: 3, md: 4 },
+        width: '100%', 
         mx: 'auto'
       }}>
         <TextField

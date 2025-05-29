@@ -11,9 +11,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  flex-direction: column;
-
+  /* display: flex; */ /* Removed for cleanliness, handled by body/#root */
+  /* flex-direction: column; */ /* Removed for cleanliness, handled by body/#root */
 }
 
 a {
@@ -36,11 +35,14 @@ body {
 
 }
 
+/*
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+*/
 
+/*
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -59,6 +61,7 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+*/
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -68,13 +71,16 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
+  /*
   button {
     background-color: #f9f9f9;
   }
+  */
 }
 
 #root{
   display: flex;
   flex-direction: column;
+  flex-grow: 1; /* Ensure #root takes up available space if body is also flex */
 }
 

@@ -231,16 +231,15 @@ const PlayerProfile = () => {
   return (
     <Container
       sx={{
-        pt: 0,
-        xs: 12,
-        md: 10,
+        pt: { xs: 1, sm: 0 }, // Add some padding top on mobile
+        px: { xs: 1, sm: 2, md: 3 }, // Responsive padding for the container
         display: "flex",
         flexDirection: "column",
         alignSelf: "stretch",
       }}
     >
       {/* Back Button in its own container */}
-      <Box sx={{ mb: 2, mt: 2 }}>
+      <Box sx={{ mb: 2, mt: { xs: 1, sm: 2} }}>
         <Button
           onClick={() => navigate(-1)}
           startIcon={<ArrowBackIcon />}
@@ -252,8 +251,9 @@ const PlayerProfile = () => {
             transition: "all 0.2s ease-in-out",
             fontFamily: "Inter",
             textTransform: "none",
-            px: 2,
-            py: 1,
+            fontSize: { xs: '0.8rem', sm: '0.9rem'},
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.8, sm: 1 },
             "&:hover": {
               bgcolor: "#0D47A1",
               color: "white",
@@ -269,7 +269,7 @@ const PlayerProfile = () => {
       <BlackBorderBox
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: { xs: 'column', sm: 'row' },
           height: "100%",
           minHeight: 350,
           bgcolor: "#0D47A1",
@@ -281,7 +281,13 @@ const PlayerProfile = () => {
             component="img"
             image={playerData.photoUrl}
             alt={`${playerData.firstName} ${playerData.lastName}`}
-            sx={{ width: "25%", minWidth: 120, objectFit: "cover" }}
+            sx={{ 
+              width: { xs: '100%', sm: '25%' }, 
+              minWidth: {sm: 120 },
+              maxHeight: { xs: 350, sm: '100%' }, // Control height on mobile
+              objectFit: "cover",
+              mb: { xs: 2, sm: 0 }, // Margin bottom on mobile
+            }}
             onError={(e) => {
               e.target.src = placeholderImageUrl;
             }}
@@ -290,12 +296,14 @@ const PlayerProfile = () => {
           <Avatar
             variant="square"
             sx={{
-              width: "25%",
-              minWidth: 120,
+              width: { xs: '100%', sm: '25%' },
+              minWidth: { sm: 120 },
+              maxHeight: { xs: 350, sm: '100%' },
               aspectRatio: "2/3",
-              mx: "auto",
+              mx: { xs: 'auto', sm: '0' }, // Center on xs if it becomes block
               fontSize: "4rem",
               objectFit: "cover",
+              mb: { xs: 2, sm: 0 },
             }}
           >
             {playerData.firstName?.[0]}
@@ -309,6 +317,7 @@ const PlayerProfile = () => {
             minWidth: 0,
             display: "flex",
             flexDirection: "column",
+            width: { xs: '100%', sm: '75%' }, // Ensure stack takes remaining width
           }}
         >
           {/* Top section: Name, Position, Avg Rank */}
@@ -318,12 +327,17 @@ const PlayerProfile = () => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              p: 2,
+              p: { xs: 1, sm: 2 }, // Responsive padding
+              textAlign: { xs: 'center', sm: 'left'} // Center text on mobile
             }}
           >
             <Typography
-              sx={{ marginLeft: 0.75, marginBottom: -1.5 }}
-              variant="h4"
+              sx={{ 
+                marginLeft: { xs: 0, sm: 0.75 }, 
+                marginBottom: { xs: -0.5, sm: -1.5 },
+                fontSize: { xs: '1.5rem', sm: 'h4.fontSize' } // Responsive font size
+              }}
+              variant="h4" // Base variant, sx overrides
               component="div"
             >
               {playerData.position ? playerData.position : "Position N/A"}
@@ -331,6 +345,7 @@ const PlayerProfile = () => {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: 'column', sm: 'row' }, // Stack rank below name on mobile
                 alignItems: "center",
                 width: "100%",
               }}
@@ -338,8 +353,9 @@ const PlayerProfile = () => {
               <Typography
                 sx={{
                   margin: 0,
-                  fontSize: 96,
-                  flexShrink: 0, // Prevent name from shrinking
+                  fontSize: { xs: '3rem', sm: '4.5rem', md: 96 }, // Responsive font size for name
+                  flexShrink: 0,
+                  lineHeight: { xs: 1.1, sm: 1 }
                 }}
                 variant="h1"
                 component="div"
@@ -351,19 +367,21 @@ const PlayerProfile = () => {
                   sx={{
                     bgcolor: "white",
                     color: "#0D47A1",
-                    px: 3,
+                    px: { xs: 2, sm: 3 }, // Responsive padding
+                    py: { xs: 0.5, sm: 'auto'},
                     borderRadius: 2,
                     fontWeight: "bold",
-                    fontSize: 64,
+                    fontSize: { xs: '2.5rem', sm: 64 }, // Responsive font size for rank
                     boxShadow: 3,
-                    minWidth: 120,
-                    height: "100%",
+                    minWidth: { xs: 100, sm: 120 },
+                    // height: { xs: 'auto', sm: '100%' }, // Adjust height for mobile
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    alignSelf: "stretch",
-                    mx: "auto", // Add auto margin on both sides
+                    alignSelf: { xs: 'center', sm: 'stretch' },
+                    mx: { sm: "auto" }, // Auto margin on sides for sm+
+                    mt: { xs: 1, sm: 0 } // Margin top on mobile
                   }}
                 >
                   {overallAverageRank.toFixed(1)}
@@ -372,9 +390,9 @@ const PlayerProfile = () => {
                     sx={{
                       color: "#0D47A1",
                       fontWeight: 400,
-                      fontSize: 18,
+                      fontSize: { xs: '0.8rem', sm: 18 }, // Responsive font size for "AVG RANK"
                       display: "block",
-                      mt: -1,
+                      mt: { xs: -0.5, sm: -1 }
                     }}
                   >
                     AVG RANK
@@ -386,7 +404,7 @@ const PlayerProfile = () => {
 
           {/* Bottom section: Team, Height, Weight, Born, Age */}
           <Stack
-            direction="row"
+            direction={{ xs: 'column', sm: 'row' }} // Stack items vertically on mobile
             sx={{
               flex: 3,
               borderTop: "3px solid #fff",
@@ -397,9 +415,11 @@ const PlayerProfile = () => {
             <Box
               sx={{
                 flex: 1,
-                p: 2,
+                p: { xs: 1, sm: 2 }, // Responsive padding
                 borderLeft: "none",
                 borderColor: "#fff",
+                borderTop: { xs: '1px solid #fff', sm: 'none' }, // Top border for mobile items
+                '&:first-of-type': { borderTop: 'none' }, // Remove top border for the first item on mobile
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -408,11 +428,11 @@ const PlayerProfile = () => {
               <Typography
                 variant="subtitle1"
                 gutterBottom
-                sx={{ textAlign: "center", fontFamily: "BebasNeue" }}
+                sx={{ textAlign: "center", fontFamily: "BebasNeue", fontSize: {xs: '0.9rem', sm: '1rem'} }}
               >
                 TEAM
               </Typography>
-              <Typography sx={{ textAlign: "center", fontFamily: "Inter" }}>
+              <Typography sx={{ textAlign: "center", fontFamily: "Inter", fontSize: {xs: '0.8rem', sm: '1rem'} }}>
                 {playerData.currentTeam || "N/A"}{" "}
                 {playerData.teamConference
                   ? `(${playerData.teamConference})`
@@ -423,9 +443,10 @@ const PlayerProfile = () => {
             <Box
               sx={{
                 flex: 1,
-                p: 2,
-                borderLeft: "3px solid #fff",
+                p: { xs: 1, sm: 2 },
+                borderLeft: { xs: 'none', sm: "3px solid #fff" },
                 borderColor: "#fff",
+                borderTop: { xs: '1px solid #fff', sm: 'none' },
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -434,11 +455,11 @@ const PlayerProfile = () => {
               <Typography
                 variant="subtitle1"
                 gutterBottom
-                sx={{ textAlign: "center", fontFamily: "BebasNeue" }}
+                sx={{ textAlign: "center", fontFamily: "BebasNeue", fontSize: {xs: '0.9rem', sm: '1rem'} }}
               >
                 HEIGHT
               </Typography>
-              <Typography sx={{ textAlign: "center", fontFamily: "Inter" }}>
+              <Typography sx={{ textAlign: "center", fontFamily: "Inter", fontSize: {xs: '0.8rem', sm: '1rem'} }}>
                 {playerData.measurements &&
                 playerData.measurements.heightShoes != null
                   ? `${getHeightInFeetInches(playerData.measurements.heightShoes)} ✅`
@@ -451,9 +472,10 @@ const PlayerProfile = () => {
             <Box
               sx={{
                 flex: 1,
-                p: 2,
-                borderLeft: "3px solid #fff",
+                p: { xs: 1, sm: 2 },
+                borderLeft: { xs: 'none', sm: "3px solid #fff" },
                 borderColor: "#fff",
+                borderTop: { xs: '1px solid #fff', sm: 'none' },
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -462,11 +484,11 @@ const PlayerProfile = () => {
               <Typography
                 variant="subtitle1"
                 gutterBottom
-                sx={{ textAlign: "center", fontFamily: "BebasNeue" }}
+                sx={{ textAlign: "center", fontFamily: "BebasNeue", fontSize: {xs: '0.9rem', sm: '1rem'} }}
               >
                 WEIGHT
               </Typography>
-              <Typography sx={{ textAlign: "center", fontFamily: "Inter" }}>
+              <Typography sx={{ textAlign: "center", fontFamily: "Inter", fontSize: {xs: '0.8rem', sm: '1rem'} }}>
                 {playerData.measurements &&
                 playerData.measurements.weight != null
                   ? `${playerData.measurements.weight} lbs ✅`
@@ -479,9 +501,10 @@ const PlayerProfile = () => {
             <Box
               sx={{
                 flex: 1,
-                p: 2,
-                borderLeft: "3px solid #fff",
+                p: { xs: 1, sm: 2 },
+                borderLeft: { xs: 'none', sm: "3px solid #fff" },
                 borderColor: "#fff",
+                borderTop: { xs: '1px solid #fff', sm: 'none' },
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -490,7 +513,7 @@ const PlayerProfile = () => {
               <Typography
                 variant="subtitle1"
                 gutterBottom
-                sx={{ textAlign: "center", fontFamily: "BebasNeue" }}
+                sx={{ textAlign: "center", fontFamily: "BebasNeue", fontSize: {xs: '0.9rem', sm: '1rem'} }}
               >
                 BORN
               </Typography>
@@ -498,6 +521,7 @@ const PlayerProfile = () => {
                 sx={{
                   textAlign: "center",
                   fontFamily: "Inter",
+                  fontSize: {xs: '0.8rem', sm: '1rem'},
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -512,9 +536,10 @@ const PlayerProfile = () => {
             <Box
               sx={{
                 flex: 1,
-                p: 2,
-                borderLeft: "3px solid #fff",
+                p: { xs: 1, sm: 2 },
+                borderLeft: { xs: 'none', sm: "3px solid #fff" },
                 borderColor: "#fff",
+                borderTop: { xs: '1px solid #fff', sm: 'none' },
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -523,11 +548,11 @@ const PlayerProfile = () => {
               <Typography
                 variant="subtitle1"
                 gutterBottom
-                sx={{ textAlign: "center", fontFamily: "BebasNeue" }}
+                sx={{ textAlign: "center", fontFamily: "BebasNeue", fontSize: {xs: '0.9rem', sm: '1rem'} }}
               >
                 AGE
               </Typography>
-              <Typography sx={{ textAlign: "center", fontFamily: "Inter" }}>
+              <Typography sx={{ textAlign: "center", fontFamily: "Inter", fontSize: {xs: '0.8rem', sm: '1rem'} }}>
                 {getAge(playerData.birthDate)}
               </Typography>
             </Box>
@@ -538,14 +563,14 @@ const PlayerProfile = () => {
       {/* Measurements Section */}
       {playerData.measurements &&
         Object.keys(playerData.measurements).length > 1 && (
-          <BlackBorderBox sx={{ p: 2, mb: 3 }}>
-            <Typography variant="h5" gutterBottom>
+          <BlackBorderBox sx={{ p: { xs: 1, sm: 2 }, mb: 3 }}>
+            <Typography variant="h5" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
               Measurements
             </Typography>
             <Grid container spacing={2}>
               {/* Column 1 */}
-              <Grid item xs={12} sm={4}>
-                <Typography sx={{ fontFamily: "Inter", mb: 2 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Typography sx={{ fontFamily: "Inter", mb: { xs: 1, sm: 2 }, fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>
                     Height (Without Shoes):
                   </span>{" "}
@@ -556,19 +581,19 @@ const PlayerProfile = () => {
                       ? `${getHeightInFeetInches(playerData.height)} 🟡`
                       : "N/A"}
                 </Typography>
-                <Typography sx={{ fontFamily: "Inter" }}>
+                <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Wingspan:</span>{" "}
                   {getHeightInFeetInches(playerData.measurements.wingspan)}
                 </Typography>
               </Grid>
 
               {/* Column 2 */}
-              <Grid item xs={12} sm={4}>
-                <Typography sx={{ fontFamily: "Inter", mb: 2 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Typography sx={{ fontFamily: "Inter", mb: { xs: 1, sm: 2 }, fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Standing Reach:</span>{" "}
                   {getHeightInFeetInches(playerData.measurements.reach)}
                 </Typography>
-                <Typography sx={{ fontFamily: "Inter" }}>
+                <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Body Fat:</span>{" "}
                   {playerData.measurements.bodyFat != null
                     ? `${playerData.measurements.bodyFat}%`
@@ -577,14 +602,14 @@ const PlayerProfile = () => {
               </Grid>
 
               {/* Column 3 */}
-              <Grid item xs={12} sm={4}>
-                <Typography sx={{ fontFamily: "Inter", mb: 2 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Typography sx={{ fontFamily: "Inter", mb: { xs: 1, sm: 2 }, fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Hand Length:</span>{" "}
                   {playerData.measurements.handLength != null
                     ? `${playerData.measurements.handLength}"`
                     : "N/A"}
                 </Typography>
-                <Typography sx={{ fontFamily: "Inter" }}>
+                <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Hand Width:</span>{" "}
                   {playerData.measurements.handWidth != null
                     ? `${playerData.measurements.handWidth}"`
@@ -593,14 +618,14 @@ const PlayerProfile = () => {
               </Grid>
 
               {/* Column 4 */}
-              <Grid item xs={12} sm={4}>
-                <Typography sx={{ fontFamily: "Inter", mb: 2 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Typography sx={{ fontFamily: "Inter", mb: { xs: 1, sm: 2 }, fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Max Vertical:</span>{" "}
                   {playerData.measurements.maxVertical != null
                     ? `${playerData.measurements.maxVertical}"`
                     : "N/A"}
                 </Typography>
-                <Typography sx={{ fontFamily: "Inter" }}>
+                <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>No Step Vertical:</span>{" "}
                   {playerData.measurements.noStepVertical != null
                     ? `${playerData.measurements.noStepVertical}"`
@@ -609,14 +634,14 @@ const PlayerProfile = () => {
               </Grid>
 
               {/* Column 5 */}
-              <Grid item xs={12} sm={4}>
-                <Typography sx={{ fontFamily: "Inter", mb: 2 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Typography sx={{ fontFamily: "Inter", mb: { xs: 1, sm: 2 }, fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Sprint:</span>{" "}
                   {playerData.measurements.sprint != null
                     ? `${playerData.measurements.sprint}s`
                     : "N/A"}
                 </Typography>
-                <Typography sx={{ fontFamily: "Inter" }}>
+                <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                   <span style={{ fontWeight: "bold" }}>Lane Agility:</span>{" "}
                   {playerData.measurements.agility != null
                     ? `${playerData.measurements.agility}s`
@@ -629,19 +654,19 @@ const PlayerProfile = () => {
 
       {/* Scout Rankings Section */}
       {Object.keys(individualScoutRanks).length > 0 && (
-        <BlackBorderBox sx={{ p: 2, mb: 3 }}>
+        <BlackBorderBox sx={{ p: { xs: 1, sm: 2 }, mb: 3 }}>
           <Typography
             variant="h5"
             gutterBottom
-            sx={{ fontFamily: "BebasNeue" }}
+            sx={{ fontFamily: "BebasNeue", fontSize: { xs: '1.25rem', sm: '1.75rem' } }}
           >
             Scout Rankings
           </Typography>
 
           {/* Overall Rankings Summary */}
-          <Box sx={{ mb: 3, p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
+          <Box sx={{ mb: 3, p: { xs: 1, sm: 2 }, bgcolor: "#f5f5f5", borderRadius: 1 }}>
             {overallAverageRank != null && (
-              <Typography sx={{ fontFamily: "Inter", mb: 1 }}>
+              <Typography sx={{ fontFamily: "Inter", mb: 1, fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                 <span style={{ fontWeight: "bold" }}>
                   Overall Average (Including ESPN):
                 </span>{" "}
@@ -649,7 +674,7 @@ const PlayerProfile = () => {
               </Typography>
             )}
             {mavsAverageRank != null && (
-              <Typography sx={{ fontFamily: "Inter", fontStyle: "italic" }}>
+              <Typography sx={{ fontFamily: "Inter", fontStyle: "italic", fontSize: { xs: '0.8rem', sm: '1rem'} }}>
                 <span style={{ fontWeight: "bold" }}>
                   Mavericks Scout Average:
                 </span>{" "}
@@ -659,7 +684,7 @@ const PlayerProfile = () => {
           </Box>
 
           {/* Individual Scout Rankings */}
-          <Grid container spacing={2}>
+          <Grid container spacing={{ xs: 1, sm: 2}}>
             {Object.entries(individualScoutRanks).map(([scout, rank]) => {
               const formattedScoutName = scout.includes(" ")
                 ? scout
@@ -687,10 +712,10 @@ const PlayerProfile = () => {
               }
 
               return (
-                <Grid item xs={12} sm={6} md={4} key={scout}>
+                <Grid item xs={12} sm={6} key={scout}> {/* Ensure 1 column on xs, 2 on sm */}
                   <Box
                     sx={{
-                      p: 1.5,
+                      p: { xs: 1, sm: 1.5 }, // Responsive padding
                       border: "1px solid #e0e0e0",
                       borderRadius: 1,
                       display: "flex",
@@ -700,7 +725,7 @@ const PlayerProfile = () => {
                     }}
                   >
                     <Typography
-                      sx={{ fontFamily: "Inter", fontWeight: "bold" }}
+                      sx={{ fontFamily: "Inter", fontWeight: "bold", fontSize: { xs: '0.8rem', sm: '0.9rem'} }}
                     >
                       {displayName}
                     </Typography>
@@ -710,6 +735,7 @@ const PlayerProfile = () => {
                         color: rankColor,
                         fontWeight: rank != null ? "medium" : "normal",
                         marginLeft: 2,
+                        fontSize: { xs: '0.8rem', sm: '0.9rem'}
                       }}
                     >
                       {rank != null ? `${rank}${indicator}` : "Not Ranked"}
@@ -723,12 +749,12 @@ const PlayerProfile = () => {
       )}
 
       {/* Player Statistics Section */}
-      <BlackBorderBox sx={{ p: 2, mb: 3, fontFamily: "Inter" }}>
-        <Typography variant="h5" gutterBottom sx={{ fontFamily: "Inter" }}>
+      <BlackBorderBox sx={{ p: { xs: 1, sm: 2 }, mb: 3, fontFamily: "Inter" }}>
+        <Typography variant="h5" gutterBottom sx={{ fontFamily: "Inter", fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
           Player Statistics
         </Typography>
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="stat-display-type-label" sx={{ fontFamily: "Inter" }}>
+          <InputLabel id="stat-display-type-label" sx={{ fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}>
             Stat Display
           </InputLabel>
           <Select
@@ -736,12 +762,12 @@ const PlayerProfile = () => {
             value={statDisplayType}
             label="Stat Display"
             onChange={handleStatTypeChange}
-            sx={{ fontFamily: "Inter" }}
+            sx={{ fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}
           >
-            <MenuItem value="perGame" sx={{ fontFamily: "Inter" }}>
+            <MenuItem value="perGame" sx={{ fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}>
               Per Game
             </MenuItem>
-            <MenuItem value="totals" sx={{ fontFamily: "Inter" }}>
+            <MenuItem value="totals" sx={{ fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}>
               Season Averages
             </MenuItem>
           </Select>
@@ -750,7 +776,7 @@ const PlayerProfile = () => {
         {statDisplayType === "totals" && (
           <>
             {playerData.seasonLogs && playerData.seasonLogs.length > 0 ? (
-              <TableContainer>
+              <TableContainer sx={{ maxHeight: { xs: 400, sm: 'none' } }}> {/* Max height for mobile scrolling if needed */}
                 <Table stickyHeader size="small">
                   <TableHead>
                     <TableRow>
@@ -763,7 +789,9 @@ const PlayerProfile = () => {
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            maxWidth: 120, // adjust as needed
+                            maxWidth: 120, 
+                            p: { xs: '6px 8px', sm: '8px 12px'}, // Reduced padding for cells
+                            fontSize: { xs: '0.7rem', sm: '0.875rem' } // Reduced font size
                           }}
                         >
                           {header.label}
@@ -789,6 +817,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {header.key === "FG"
@@ -815,7 +845,7 @@ const PlayerProfile = () => {
                 </Table>
               </TableContainer>
             ) : (
-              <Typography sx={{ fontFamily: "Inter" }}>
+              <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}>
                 No season logs available.
               </Typography>
             )}
@@ -842,23 +872,27 @@ const PlayerProfile = () => {
                         mb: 1,
                         display: "block",
                         color: "text.secondary",
+                        fontSize: { xs: '0.75rem', sm: '0.875rem'}
                       }}
                     >
                       2025 Season
                     </Typography>
-                    <TableContainer>
+                    <TableContainer sx={{ maxHeight: { xs: 400, sm: 'none' } }}>
                       <Table stickyHeader size="small">
                         <TableHead>
                           <TableRow>
                             {gameLogTableHeaders.map(
                               (
-                                header // Added missing parentheses
+                                header 
                               ) => (
                                 <TableCell
                                   key={header.key}
                                   sx={{
                                     fontWeight: "bold",
                                     fontFamily: "Inter",
+                                    p: { xs: '6px 8px', sm: '8px 12px'},
+                                    fontSize: { xs: '0.7rem', sm: '0.875rem' },
+                                    whiteSpace: 'nowrap'
                                   }}
                                 >
                                   {header.key === "date"
@@ -879,6 +913,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {format(new Date(log.date), "MM/dd")}
@@ -890,6 +926,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.opponent}
@@ -901,6 +939,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.timePlayed}
@@ -912,6 +952,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.pts}
@@ -923,6 +965,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.reb}
@@ -934,6 +978,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.ast}
@@ -945,6 +991,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.stl}
@@ -956,6 +1004,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.blk}
@@ -967,6 +1017,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {`${log.fgm != null ? log.fgm : "0"}-${log.fga != null ? log.fga : "0"}`}
@@ -978,6 +1030,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {formatPercentageStat(log["fg%"])}
@@ -989,6 +1043,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {`${log.tpm != null ? log.tpm : "0"}-${log.tpa != null ? log.tpa : "0"}`}
@@ -1000,6 +1056,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {formatPercentageStat(log["tp%"])}
@@ -1011,6 +1069,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {`${log.ftm != null ? log.ftm : "0"}-${log.fta != null ? log.fta : "0"}`}
@@ -1022,6 +1082,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {formatPercentageStat(log["ft%"])}
@@ -1033,6 +1095,8 @@ const PlayerProfile = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   maxWidth: 90,
+                                  p: { xs: '6px 8px', sm: '8px 12px'},
+                                  fontSize: { xs: '0.7rem', sm: '0.875rem' }
                                 }}
                               >
                                 {log.plusMinus}
@@ -1046,7 +1110,7 @@ const PlayerProfile = () => {
                 );
               } else {
                 return (
-                  <Typography sx={{ fontFamily: "Inter" }}>
+                  <Typography sx={{ fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}>
                     No game logs available for this player.
                   </Typography>
                 );
@@ -1057,8 +1121,8 @@ const PlayerProfile = () => {
       </BlackBorderBox>
 
       {/* Scouting Reports Section */}
-      <BlackBorderBox sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h5" gutterBottom>
+      <BlackBorderBox sx={{ p: { xs: 1, sm: 2 }, mb: 3 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
           Scouting Reports
         </Typography>
         {/* Display existing reports from playerData.scoutingReports */}
@@ -1077,6 +1141,7 @@ const PlayerProfile = () => {
                 sx={{
                   borderBottom: "1px solid #eee",
                   "&:last-child": { borderBottom: "none" },
+                  p: { xs: '4px 0', sm: '8px 0'} // Reduce padding for list items on mobile
                 }}
               >
                 <ListItemText
@@ -1084,7 +1149,7 @@ const PlayerProfile = () => {
                     <Typography
                       variant="subtitle2"
                       component="span"
-                      sx={{ fontFamily: "Inter", fontWeight: "bold" }}
+                      sx={{ fontFamily: "Inter", fontWeight: "bold", fontSize: { xs: '0.85rem', sm: '0.9rem'} }}
                     >
                       {report.scout || "Unknown Scout"}{" "}
                       {report.date
@@ -1100,6 +1165,7 @@ const PlayerProfile = () => {
                         fontFamily: "Inter",
                         display: "block",
                         whiteSpace: "pre-wrap",
+                        fontSize: { xs: '0.75rem', sm: '0.875rem'}
                       }}
                     >
                       {report.report}
@@ -1115,6 +1181,7 @@ const PlayerProfile = () => {
               mb: newScoutingReports.length > 0 ? 2 : 0,
               fontStyle: "italic",
               fontFamily: "Inter",
+              fontSize: { xs: '0.8rem', sm: '0.9rem'}
             }}
           >
             No existing scouting reports.
@@ -1130,12 +1197,13 @@ const PlayerProfile = () => {
                 playerData.scoutingReports.length > 0
                   ? 2
                   : 0,
+              p: { xs: 1, sm: 1.5 } // Padding for new reports box
             }}
           >
             <Typography
               variant="subtitle1"
               gutterBottom
-              sx={{ fontWeight: "bold", fontFamily: "Inter" }}
+              sx={{ fontWeight: "bold", fontFamily: "Inter", fontSize: { xs: '0.9rem', sm: '1rem'} }}
             >
               Newly Added Reports:
             </Typography>
@@ -1147,6 +1215,7 @@ const PlayerProfile = () => {
                   sx={{
                     borderBottom: "1px solid #eee",
                     "&:last-child": { borderBottom: "none" },
+                    p: { xs: '4px 0', sm: '8px 0'}
                   }}
                 >
                   <ListItemText
@@ -1154,13 +1223,13 @@ const PlayerProfile = () => {
                       <Typography
                         variant="subtitle2"
                         component="span"
-                        sx={{ fontFamily: "Inter", fontWeight: "bold" }}
+                        sx={{ fontFamily: "Inter", fontWeight: "bold", fontSize: { xs: '0.85rem', sm: '0.9rem'} }}
                       >
                         {report.scout} -{" "}
                         <Typography
                           component="span"
                           variant="caption"
-                          sx={{ fontFamily: "Inter" }}
+                          sx={{ fontFamily: "Inter", fontSize: { xs: '0.7rem', sm: '0.8rem'} }}
                         >
                           {format(new Date(report.date), "MM/dd/yyyy HH:mm")}
                         </Typography>
@@ -1174,6 +1243,7 @@ const PlayerProfile = () => {
                           fontFamily: "Inter",
                           display: "block",
                           whiteSpace: "pre-wrap",
+                          fontSize: { xs: '0.75rem', sm: '0.875rem'}
                         }}
                       >
                         {report.report}
@@ -1185,7 +1255,8 @@ const PlayerProfile = () => {
             </List>
           </BlackBorderBox>
         )}
-        <ScoutingReportForm onAddReport={handleAddReport} />
+        <ScoutingReportForm onAddReport={handleAddReport} /> 
+        {/* Assuming ScoutingReportForm handles its own responsiveness. If not, it might need Grid items or sx props passed down. */}
       </BlackBorderBox>
     </Container>
   );
