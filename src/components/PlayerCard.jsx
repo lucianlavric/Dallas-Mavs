@@ -134,9 +134,13 @@ const PlayerCard = memo(({ player }) => {
                 { label: 'BORN', value: new Date(player.birthDate).toLocaleDateString() },
                 { label: 'AGE', value: getAge(player.birthDate) }
               ].map((stat) => (
-                <Grid item xs={6} sm={2.4} key={stat.label}> 
+                <Grid item xs={6} sm={2.4} key={stat.label} sx={{
+                  display: { xs: 'flex', sm: 'block' },      // Use flex for xs, default block for sm+
+                  flexDirection: { xs: 'column', sm: 'initial' }, // Column direction for flex on xs
+                  alignItems: { xs: 'center', sm: 'initial' }   // Center items for flex on xs
+                }}> 
                   <Box sx={{ 
-                    textAlign: { xs: 'center', sm: 'left' }, // Center on mobile, left-align on larger screens
+                    textAlign: { xs: 'center', sm: 'left' }, // Text alignment within the Box
                     py: 0.25, 
                     px: 1 
                   }}>
